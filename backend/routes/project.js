@@ -58,4 +58,83 @@ router.post('/save',requireAuth, async (req, res) => {
   }
 });
 
+router.put("/update/:id",async(req,res)=> {
+  try{
+    console.log("yhan aage oye");
+    const { name , files} = req.body;
+    const project = await Project.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        files,
+      },
+      {new : true}
+    );
+    console.log("updated");
+    res.json(project);
+  }
+  catch(err){
+    res.status(500).json({
+      message: "error",
+    });
+  }
+});
+
+router.delete("/delete/:id",async(req,res)=>{
+  console.log("delete m aagye oyee")
+  try{
+    const project = await Project.findByIdAndDelete(req.params.id);
+    res.json({
+      message: "deleted"
+    });
+    console.log("delete hogya oye!!")
+  }
+  catch (err) {
+    res.status(500).json({
+      message: "error"
+    });
+  }
+});
+
+router.get("/:id",async(req,res) =>{
+  try{
+    const project = await Project.findById(
+      req.params.id
+    );
+
+    if(!project){
+      return res.status(404).json({
+        message: "Project not found"
+      });
+    }
+    console.log(project.files);
+    res.json(project);
+  }
+  catch(err){
+    res.status(500).json({
+      message: "error"
+    });
+  }
+});
+
+router.get("/", async (req, res) => {
+
+  try {
+
+    const projects = await Project.find();
+
+    res.json(projects);
+
+  } catch (err) {
+
+    res.status(500).json({
+      message: "error"
+    });
+
+  }
+
+});
+
 module.exports = router;
+
+

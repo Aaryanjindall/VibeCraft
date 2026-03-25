@@ -4,6 +4,8 @@ import Editorr from "../components/Editor";
 import PreviewPanel from "../components/PreviewPanel";
 import { downloadProject } from "../utils/downloadProject";
 import { runProjectInNewTab } from "../utils/runProject";
+import Sidebar from "../components/Sidebar";
+
 const Builder = () => {
   
   const [prompt, setPrompt] = useState("");
@@ -13,12 +15,69 @@ const Builder = () => {
   const [runFiles, setRunFiles] = useState({});
   const [showPreview,setshowPreview] = useState(true);
   const [autoRun,setAutoRun] = useState(false);
+  const [projects, setProjects] = useState([]);
+  const [showSidebar,setShowSidebar] = useState(false);
+  const [currentProject,setcurrentProject] = useState(null);
+  const [unsaved,setunsaved] = useState(false);
 
+  const createFile = (name) => {
+  if (!name) return;
+  if (files[name]) {
+    alert("File exists");
+    return;
+  }
+  setFiles({
+    ...files,
+    [name]: ""
+  });
+  setActiveFile(name);
+};
+  const deleteFile = (name) => {
+    const newFiles = { ...files };
+    delete newFiles[name];
+    setFiles(newFiles);
+    const keys = Object.keys(newFiles);
+    if(keys.length > 0){
+      setActiveFile(keys[0]);
+    }
+  };
+  const renameFile = (oldName,newName) => {
+    if(!newName)return;
+    const newFiles = {...files};
+    newFiles[newName] = newFiles[oldName];
+    delete newFiles[oldName];
+    setFiles(newFiles);
+    if(activeFile == oldName){
+      setActiveFile(newName);
+    }
+  }
   useEffect(()=>{
     if(autoRun){
       setRunFiles(files);
     }
   },[files,autoRun]);
+
+  useEffect(()=>{
+    if (!currentProject) return;
+    if (!files) return;
+    if (Object.keys(files).length === 0) return;
+    const timer = setTimeout(()=>{
+      handleSave();
+      console.log("files changes after 5 sec");
+    },5000);
+    return () => clearTimeout(timer);
+  },[files]);
+
+  useEffect(() => {
+
+  if (!files) return;
+  if (Object.keys(files).length === 0) return;
+
+  setunsaved(true);
+
+}, [files]);
+
+  
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
     setLoading(true);
@@ -37,6 +96,8 @@ const Builder = () => {
       const data = await res.json();
       setFiles(data.files);
       setRunFiles(data.files);
+      setcurrentProject(null);
+      setunsaved(true);
     } catch (err) {
       console.log(err);
     } finally {
@@ -44,32 +105,94 @@ const Builder = () => {
     }
   };
 
+  const loadProject = async (id) => {
+
+  const res = await fetch(
+    "http://localhost:5001/api/project/" + id
+  );
+
+  const data = await res.json();
+  setFiles(data.files);
+  setRunFiles(data.files);
+  setunsaved(false);
+  setcurrentProject({
+    id: data._id,
+    name: data.name
+  });
+
+  localStorage.setItem(
+    "lastProjectId",
+    data._id
+  );
+
+
+};
+
+
+useEffect(()=>{
+  const lastId = localStorage.getItem("lastProjectId");
+  if(lastId){
+    loadProject(lastId);
+  }
+},[]);
+
+const getProjects = async() => {
+  const res = await fetch("http://localhost:5001/api/project");
+
+  const data = await res.json();
+  setProjects(data);
+}
+
   const handleSave = async () => {
   try {
+    if (!files) return;
+    if (Object.keys(files).length === 0) return;
+    const url = currentProject ? "http://localhost:5001/api/project/update/"+ currentProject.id : "http://localhost:5001/api/project/save";
+
+    
+
+    const meth = currentProject ? "PUT" : "POST";
     const res = await fetch(
-      "http://localhost:5001/api/project/save",
+      url,
       {
-        method: "POST",
+        method: meth,
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",   // IMPORTANT
         body: JSON.stringify({
-          name: "My Project",
-          files: runFiles,
+          name: currentProject ? currentProject.name : "New AI Project ",
+          files: files,
         }),
       }
     );
-
+    
+      
     const data = await res.json();
-
-    console.log(data);
-    alert("Completed");
-
+    setunsaved(false);
   } catch (err) {
     console.log(err);
   }
 };
+const deleteProject = async(id) => {
+  await fetch(
+    "http://localhost:5001/api/project/delete/"+ id,
+    {
+      method: "DELETE"
+    }
+  );
+  getProjects();
+  if (
+    currentProject &&
+    currentProject.id === id
+  ) {
+    setFiles({});
+    setcurrentProject(null);
+    localStorage.removeItem(
+    "lastProjectId"
+    )
+  }
+}
   return (
     <div
       style={{
@@ -91,7 +214,23 @@ const Builder = () => {
           fontWeight: "bold",
         }}
       >
-        AI Builder
+         AI Builder -
+
+  {currentProject
+    ? currentProject.name
+    : "No Project"}
+
+  {unsaved && "*"}
+      </div>
+      <div className="flex">
+        <button onClick={() => setShowSidebar(!showSidebar)}>☰</button>
+        <Sidebar 
+        showSidebar={showSidebar}
+        projects={projects}
+        getProjects={getProjects}
+        loadProject={loadProject}
+        deleteProject={deleteProject}
+        />
       </div>
       {/* prompt */}
       <div
@@ -155,6 +294,9 @@ const Builder = () => {
           files={files}
           activeFile={activeFile}
           setActiveFile={setActiveFile}
+          createFile={createFile}
+          deleteFile={deleteFile}
+          renameFile={renameFile}
         />
 
 
