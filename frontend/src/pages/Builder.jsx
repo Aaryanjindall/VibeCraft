@@ -19,6 +19,7 @@ const Builder = () => {
   const [showSidebar,setShowSidebar] = useState(false);
   const [currentProject,setcurrentProject] = useState(null);
   const [unsaved,setunsaved] = useState(false);
+  const [saveLoading,setsaveLoading] = useState(false);
 
   const createFile = (name) => {
   if (!name) return;
@@ -61,6 +62,7 @@ const Builder = () => {
     if (!currentProject) return;
     if (!files) return;
     if (Object.keys(files).length === 0) return;
+    if(!unsaved)return;
     const timer = setTimeout(()=>{
       handleSave();
       console.log("files changes after 5 sec");
@@ -72,7 +74,7 @@ const Builder = () => {
 
   if (!files) return;
   if (Object.keys(files).length === 0) return;
-
+  if (!currentProject) return;
   setunsaved(true);
 
 }, [files]);
@@ -106,9 +108,13 @@ const Builder = () => {
   };
 
   const loadProject = async (id) => {
+    try{
 
+    
   const res = await fetch(
-    "http://localhost:5001/api/project/" + id
+    "http://localhost:5001/api/project/" + id,{
+      credentials: "include"
+    }
   );
 
   const data = await res.json();
@@ -122,34 +128,60 @@ const Builder = () => {
 
   localStorage.setItem(
     "lastProjectId",
-    data._id
+    data.project._id
   );
-
+    }catch(err){
+      console.log(err);
+    }
 
 };
 
-
 useEffect(()=>{
   const lastId = localStorage.getItem("lastProjectId");
-  if(lastId){
+  if(lastId && lastId !== "undefined"){
     loadProject(lastId);
   }
 },[]);
 
+useEffect(()=>{
+  const handleKey = (e) => {
+    if((e.ctrlKey || e.metaKey) && e.key === "s"){
+      e.preventDefault();
+      handleSave();
+    }
+  };
+  window.addEventListener(
+    "keydown",
+    handleKey
+  );
+
+  return () => 
+    window.removeEventListener(
+      "keydown",
+      handleKey
+    );
+
+},[files,currentProject]);
+
 const getProjects = async() => {
-  const res = await fetch("http://localhost:5001/api/project");
+  const res = await fetch("http://localhost:5001/api/project",{
+    credentials: "include"
+  });
 
   const data = await res.json();
-  setProjects(data);
+  if(Array.isArray(data)){
+    setProjects(data);
+  }else{
+    setProjects([]);
+  }
 }
 
   const handleSave = async () => {
   try {
     if (!files) return;
     if (Object.keys(files).length === 0) return;
+    setsaveLoading(true);
     const url = currentProject ? "http://localhost:5001/api/project/update/"+ currentProject.id : "http://localhost:5001/api/project/save";
-
-    
 
     const meth = currentProject ? "PUT" : "POST";
     const res = await fetch(
@@ -169,9 +201,18 @@ const getProjects = async() => {
     
       
     const data = await res.json();
+    if (!currentProject && data.project) {
+      setcurrentProject({
+        id: data.project._id,
+        name: data.project.name,
+      });
+    }
     setunsaved(false);
   } catch (err) {
     console.log(err);
+  }
+  finally{
+    setsaveLoading(false);
   }
 };
 const deleteProject = async(id) => {
@@ -193,6 +234,32 @@ const deleteProject = async(id) => {
     )
   }
 }
+
+
+const deploy = async() => {
+  try{
+  if(!currentProject){
+    return;
+  }
+
+  const id = currentProject.id;
+  const res = await fetch("http://localhost:5001/api/project/deploy/internal/"+id,
+  {
+    method : "POST",
+    credentials: "include"
+  }
+);
+  const data = await res.json();
+  const url = data.url;
+  navigator.clipboard.writeText(url);
+  window.open(url,'_blank').focus();
+  
+}catch(err){
+  console.log(err);
+}
+}
+
+
   return (
     <div
       style={{
@@ -257,6 +324,9 @@ const deleteProject = async(id) => {
   <button onClick={() => downloadProject(runFiles)}>
     Download
   </button>
+  <button onClick={deploy}>
+  Quick Deploy
+</button>
   <button
   onClick={() => setshowPreview(!showPreview)}
 >
@@ -274,9 +344,24 @@ const deleteProject = async(id) => {
 </button>
 
 <button onClick={handleSave}>
-  Save
+  {saveLoading ? "Saving" : unsaved ? "Save" : "Saved"}
 </button>
 
+<button onClick={async () => {
+  if(!currentProject)return;
+  const link = "http://localhost:5173/project/"+currentProject.id;
+
+  navigator.clipboard.writeText(link);
+  alert("Link copied");
+  await fetch(
+    "http://localhost:5001/api/project/toggle/"+currentProject.id,{
+      method: "PUT",
+      credentials: "include",
+    }
+  );
+}}>
+  Toggle Public
+</button>
 
       {/* main builder area */}
 

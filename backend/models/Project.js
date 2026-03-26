@@ -21,6 +21,11 @@ const projectSchema = new mongoose.Schema(
       required: true,
     },
 
+    isPublic: {
+      type: Boolean,
+      default: false,
+    },
+
     community: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Community",

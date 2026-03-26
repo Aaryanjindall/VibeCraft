@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const groq = require('../config/groq');
+const { requireAuth } = require('../middleware/auth');
 
 // Validate and fix file structure for deployment
 const validateAndFixFiles = (files) => {
@@ -72,10 +73,11 @@ document.addEventListener('DOMContentLoaded', function() {
 };
 
 // Generate endpoint
-router.post('/', async (req, res) => {
+router.post('/',requireAuth, async (req, res) => {
   try {
     const { prompt } = req.body;
     console.log("part1");
+    console.log(req.session.userId);
     if (!prompt) throw new Error("Prompt is required");
 
     const enhancedPrompt = `

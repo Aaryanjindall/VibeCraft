@@ -37,6 +37,8 @@ const Sidebar = ({
       <h3>Projects</h3>
 
       {
+
+        Array.isArray(projects) && 
         projects.map((p) => (
           <div key={p._id}>
             {p.name}
