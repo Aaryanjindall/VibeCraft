@@ -27,14 +27,18 @@ const Sidebar = ({
         position: "fixed",
         right: 0,
         top: 0,
-        width: 250,
-        height: "100vh",
-        background: "#222",
-        color: "white"
+        width: 270,
+        height: "50vh",
+        background: "#231010",
+        color: "white",
+        
+        
       }}
     >
 
-      <h3>Projects</h3>
+      <h3 style={{
+        textAlign: "center"
+      }}>Projects</h3>
 
       {
 

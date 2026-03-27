@@ -12,12 +12,14 @@ const connectDB = require('./config/database');
 // Import routes
 const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/posts');
-const communityRoutes = require('./routes/communities');
+// const communityRoutes = require('./routes/communities');
 const chatRoutes = require('./routes/chat');
 const adminRoutes = require('./routes/admin');
 const generateRoutes = require('./routes/generate');
 const publishRoutes = require('./routes/publish');
 const projectRoutes = require('./routes/project');
+const deployRoutes = require('./routes/deploy');
+const communityRoutes = require('./routes/community');
 
 // Initialize app
 const app = express();
@@ -75,7 +77,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/generate', generateRoutes);
 app.use('/api/project', projectRoutes);
 app.use('/api/publish', publishRoutes);
-
+app.use('/api/deploy',deployRoutes);
+app.use('/api/community/',communityRoutes);
 // Socket.io setup for real-time chat
 const { Server } = require('socket.io');
 const ChatMessage = require('./models/Chat');

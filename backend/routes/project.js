@@ -174,81 +174,38 @@ router.put("/toggle/:id",requireAuth,async(req,res) => {
   res.json(project);
 })
 
-
-router.post("/deploy/internal/:id",requireAuth,async(req,res) => {
-  try{
-    const project = await Project.findById(
-      req.params.id
-    );
-
-    if(!project){
-      return res.status(404).json({
-        error: "Project not found",
-      });
-    }
-    let deploy = await Deploy.findOne({
-      project: project._id
+router.put("/add-to-community/:id", requireAuth , async(req,res) => {
+  const { communityId } = req.body;
+  const project = await Project.findById(req.params.id);
+  const community = await Project.findById(communityId);
+  if(!community.members.includes(req.session.userId)){
+    return res.status(403).json({
+      error: "Not a member",
     });
-    if(!deploy){
-    const deployId = crypto.randomBytes(6).toString("hex");
-    deploy = new Deploy({
-      project : project._id,
-      deployId,
-    });
-    await deploy.save();
   }
-    res.json({
-      url:
-      "http://localhost:5001/api/project/d/"+deploy.deployId,
-    });
-
-
-  }catch(err){
-    console.log(err);
-  }
-});
-router.get("/d/:deployId", async (req, res) => {
-
-  const deploy = await Deploy.findOne({
-    deployId: req.params.deployId,
-  }).populate("project");
-
-  if (!deploy) {
-    return res.send("Not found");
-  }
-
-  const files = deploy.project.files || {};
-  console.log(files);
-  const html = files["index.html"] || "";
-  const css = files["styles.css"] || "";
-  const js = files["script.js"] || "";
-
-  const full = `
-<!DOCTYPE html>
-<html>
-<head>
-
-<style>
-${css}
-</style>
-
-</head>
-
-<body>
-
-${html}
-
-<script>
-${js}
-</script>
-
-</body>
-</html>
-`;
-
-  res.send(full);
+  project.community = communityId;
+  await project.save();
+  res.json({
+    message: "Added to community"
+  });
 
 });
+
+router.put(
+  "/remove-from-community/:id",
+  requireAuth,
+  async (req, res) => {
+
+    const project = await Project.findById(req.params.id);
+
+    project.community = null;
+
+    await project.save();
+
+    res.json({ message: "Removed" });
+
+  }
+);
 
 module.exports = router;
 

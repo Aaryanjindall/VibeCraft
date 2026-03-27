@@ -5,6 +5,7 @@ import PreviewPanel from "../components/PreviewPanel";
 import { downloadProject } from "../utils/downloadProject";
 import { runProjectInNewTab } from "../utils/runProject";
 import Sidebar from "../components/Sidebar";
+import DeploySidebar from "../components/DeploySidebar";
 
 const Builder = () => {
   
@@ -20,6 +21,49 @@ const Builder = () => {
   const [currentProject,setcurrentProject] = useState(null);
   const [unsaved,setunsaved] = useState(false);
   const [saveLoading,setsaveLoading] = useState(false);
+  const [deployStatus, setDeployStatus] = useState("");
+  const [deploys,setDeploys] = useState([]);
+  const [depsidebar,setdepsidebar] = useState(false);
+  const [communities,setCommunities] = useState([]);
+
+  const createCommunity = async () => {
+    const res = await fetch(
+      "http://localhost/5001/api/community/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "includes",
+        body: JSON.stringify({ name }),
+      }
+    );
+    const data = await res.json();
+
+    console.log(data);
+
+  };
+ 
+  const joinCommunity = async (id) => {
+    await fetch(
+      "http:localhost:5001/api/communtity/join/"+id,{
+        method: "POST",
+        credentials: "include",
+      }
+    );
+
+  };
+
+  const loadCommunities = async() => {
+    const res = await fetch(
+      "http://localhost:5001/api/community/my",{
+        credentials: "include",
+      }
+    );
+    const data = await res.json();
+    setCommunities(data);
+    
+  }
 
   const createFile = (name) => {
   if (!name) return;
@@ -241,9 +285,9 @@ const deploy = async() => {
   if(!currentProject){
     return;
   }
-
+  setDeployStatus()
   const id = currentProject.id;
-  const res = await fetch("http://localhost:5001/api/project/deploy/internal/"+id,
+  const res = await fetch("http://localhost:5001/api/deploy/internal/"+id,
   {
     method : "POST",
     credentials: "include"
@@ -258,6 +302,48 @@ const deploy = async() => {
   console.log(err);
 }
 }
+
+const deploynet = async() => {
+  try{
+    if(!currentProject)return;
+    setDeployStatus("Deploying...");
+    const res = await fetch("http://localhost:5001/api/deploy/netlify/"+currentProject.id,{
+      method: "POST",
+      credentials: "include",
+    });
+
+    const data = await res.json();
+    if(data.url){
+      setDeployStatus("Success");
+      const url = data.url;
+      console.log(url);
+      navigator.clipboard.writeText(url);
+      window.open(url,"_blank");
+    }
+    else{
+      setDeployStatus("Failed")
+    }
+  }catch(err){
+    setDeployStatus("Error");
+  }
+
+}
+
+const loadDeploys = async () => {
+
+  if (!currentProject) return;
+
+  const res = await fetch(
+    "http://localhost:5001/api/deploy/history/" +
+      currentProject.id,
+    {
+      credentials: "include",
+    }
+  );
+  const data = await res.json();
+  setDeploys(data);
+
+};
 
 
   return (
@@ -299,6 +385,14 @@ const deploy = async() => {
         deleteProject={deleteProject}
         />
       </div>
+      <div className="flex">
+        <button onClick={()=> setdepsidebar(!depsidebar)}>O</button>
+        <DeploySidebar
+          loadDeploys={loadDeploys}
+          depsidebar={depsidebar}
+          deploys={deploys}
+        />
+      </div>
       {/* prompt */}
       <div
   style={{
@@ -327,6 +421,8 @@ const deploy = async() => {
   <button onClick={deploy}>
   Quick Deploy
 </button>
+<button onClick={deploynet}>Deploy to Netlify</button>
+
   <button
   onClick={() => setshowPreview(!showPreview)}
 >
