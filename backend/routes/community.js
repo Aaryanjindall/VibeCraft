@@ -2,10 +2,15 @@ const express = require("express");
 const { requireAuth } = require("../middleware/auth");
 const { default: mongoose } = require("mongoose");
 const Community = require("../models/Community");
+const Project = require("../models/Project");
 const router = express.Router();
 
+
 router.post("/create",requireAuth,async(req,res) => {
-    const { name } = req.body;
+    const { name } = req.body || {};
+    if(!name){
+        return res.status(400).json({ message: "Name is required "});
+    }
     const commnunity = new Community({
         name,
         owner: req.session.userId,

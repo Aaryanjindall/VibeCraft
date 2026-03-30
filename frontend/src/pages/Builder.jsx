@@ -6,6 +6,7 @@ import { downloadProject } from "../utils/downloadProject";
 import { runProjectInNewTab } from "../utils/runProject";
 import Sidebar from "../components/Sidebar";
 import DeploySidebar from "../components/DeploySidebar";
+import { useNavigate } from "react-router-dom";
 
 const Builder = () => {
   
@@ -25,6 +26,16 @@ const Builder = () => {
   const [deploys,setDeploys] = useState([]);
   const [depsidebar,setdepsidebar] = useState(false);
   const [communities,setCommunities] = useState([]);
+  const [selectedCommunity,setSelectedCommunity] = useState("");
+
+
+  const navigate = useNavigate();
+  useEffect(()=>{
+    fetch("https:localhost:5001/api/community/my",{
+      credentials: "include",
+    }).then((res) => res.json())
+    .then(setCommunities);
+  },[]);
 
   const createCommunity = async () => {
     const res = await fetch(
@@ -53,6 +64,7 @@ const Builder = () => {
     );
 
   };
+
 
   const loadCommunities = async() => {
     const res = await fetch(
@@ -345,8 +357,7 @@ const loadDeploys = async () => {
 
 };
 
-
-  return (
+return (
     <div
       style={{
         height: "100vh",
@@ -458,6 +469,34 @@ const loadDeploys = async () => {
 }}>
   Toggle Public
 </button>
+<select value={selectedCommunity} onChange={(e) => setSelectedCommunity(e.target.value)}>
+  <option value="">Select Community</option>
+
+  {communities.map((c)=>(
+    <option key={c._id} value={c._id}>
+    {c.name}
+    </option>
+  ))}
+</select>
+
+<button onClick={async () => {
+  await fetch(
+    "http:localhost:5001/api/project/add-to-community/"+
+    currentProject.id,{
+      method: "PUT",
+      headers: { "Content-Type" : "application/json"},
+      credentials: "include",
+      body: JSON.stringify({
+        communityId: selectedCommunity,
+      }),
+    }
+  ),
+  alert("Added");
+}}>
+  Add to Community
+</button>
+
+<button onClick={()=>navigate('/community')}>Community</button>
 
       {/* main builder area */}
 

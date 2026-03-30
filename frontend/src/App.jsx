@@ -7,6 +7,8 @@ import './App.css'
 import Vibe from './pages/Vibe'
 import Landing from './pages/Landing'
 
+
+
 import CommunityFeed from './pages/CommunityFeed'
 import CreatePost from './pages/CreatePost'
 import PostDetail from './pages/PostDetail'
@@ -21,6 +23,7 @@ import Dashboard from './pages/Dashboard'
 import ProtectedRoute from './utils/ProtectedRoute';
 import ErrorPage from './pages/ErrorPage';
 import Builder from './pages/Builder';
+import CommunityPage from './pages/CommunityPage';
 
 // ✅ add
 
@@ -56,10 +59,11 @@ function App() {
           path="/community"
           element={
             <ProtectedRoute>
-              <CommunityFeed />
+              <CommunityPage/>
             </ProtectedRoute>
           }
         />
+
 
         <Route
           path="/community/search"
