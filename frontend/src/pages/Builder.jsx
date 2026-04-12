@@ -11,17 +11,17 @@ import { useNavigate } from "react-router-dom";
 const Builder = () => {
   
   const [prompt, setPrompt] = useState("");
-  const [files, setFiles] = useState({});
+  const [files, setFiles] = useState({}); //dd
   const [loading, setLoading] = useState(false);
-  const [activeFile, setActiveFile] = useState("index.html");
-  const [runFiles, setRunFiles] = useState({});
+  const [activeFile, setActiveFile] = useState("index.html"); //dd
+  const [runFiles, setRunFiles] = useState({});//dd
   const [showPreview,setshowPreview] = useState(true);
-  const [autoRun,setAutoRun] = useState(false);
-  const [projects, setProjects] = useState([]);
+  const [autoRun,setAutoRun] = useState(false);//dd
+  const [projects, setProjects] = useState([]);//dd
   const [showSidebar,setShowSidebar] = useState(false);
-  const [currentProject,setcurrentProject] = useState(null);
-  const [unsaved,setunsaved] = useState(false);
-  const [saveLoading,setsaveLoading] = useState(false);
+  const [currentProject,setcurrentProject] = useState(null);//dd
+  const [unsaved,setunsaved] = useState(false);//dd
+  const [saveLoading,setsaveLoading] = useState(false);//dd
   const [deployStatus, setDeployStatus] = useState("");
   const [deploys,setDeploys] = useState([]);
   const [depsidebar,setdepsidebar] = useState(false);
@@ -126,8 +126,8 @@ const Builder = () => {
     return () => clearTimeout(timer);
   },[files]);
 
+  
   useEffect(() => {
-
   if (!files) return;
   if (Object.keys(files).length === 0) return;
   if (!currentProject) return;
@@ -413,6 +413,8 @@ return (
     gap: "10px",
   }}
 >
+
+  
   <textarea
     value={prompt}
     onChange={(e) => setPrompt(e.target.value)}

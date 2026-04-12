@@ -154,6 +154,9 @@ const handleSignin = async (e) => {
               Sign Up
             </Link>
           </p>
+          <button onClick={() => window.open("http://localhost:5001/api/auth/google", "_self")}>
+  Login with Google
+</button>
           <h4>Or</h4>
           <p style={{marginLeft: "50px"}}>Login as <Link to="/admin" style={{ color: "#38bdf8", textDecoration: "underline",textDecorationLine: false }}>Admin</Link></p>
         </div>

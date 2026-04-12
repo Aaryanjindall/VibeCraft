@@ -1,6 +1,6 @@
 // Authentication middleware
 const requireAuth = (req, res, next) => {
-  if (!req.session.userId) {
+  if (!req.user) {
     return res.status(401).json({ error: 'Authentication required. Please log in.' });
   }
   next();

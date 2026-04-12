@@ -1,184 +1,148 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useUser } from "../context/UserProvider";
 
 const Landing = () => {
 
   const blocks = [
-    { title: "Generate", desc: "AI turns prompts into HTML/CSS/JS.", icon: "🤖" },
-    { title: "Edit", desc: "Live code editor with preview.", icon: "🧭" },
-    { title: "Publish", desc: "Deploy to Netlify/GitHub quickly.", icon: "🚀" },
-    { title: "Community", desc: "Share posts & get feedback.", icon: "👥" },
-    { title: "Admin", desc: "Moderate users/posts easily.", icon: "🛡️" },
-    { title: "Secure", desc: "Session-based auth with cookies.", icon: "🔐" }
+    { title: "Generate", desc: "AI turns prompts into full code.", icon: "🤖" },
+    { title: "Edit", desc: "Live editor with instant preview.", icon: "🧭" },
+    { title: "Publish", desc: "Deploy instantly to web.", icon: "🚀" },
+    { title: "Community", desc: "Share & explore projects.", icon: "👥" },
+    { title: "Admin", desc: "Manage users & content.", icon: "🛡️" },
+    { title: "Secure", desc: "Session-based authentication.", icon: "🔐" }
   ];
 
+  const {user} = useUser();
+
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background:
-          "radial-gradient(circle at 20% 20%, rgba(59,130,246,0.2), transparent 35%), linear-gradient(135deg, #0b1224, #0f172a)",
-        color: "#e0e4ed",
-        fontFamily: "Inter, sans-serif",
-        padding: "20px",
-      }}
-    >
+    <div className="min-h-screen bg-[#020617] text-white overflow-hidden">
 
-      {/* ✅ TOP BAR */}
+      {/* 🔥 Animated Background */}
+      <motion.div
+        animate={{ x: [0, 60, -60, 0], y: [0, -60, 60, 0] }}
+        transition={{ duration: 15, repeat: Infinity }}
+        className="absolute w-[600px] h-[600px] bg-purple-600/20 blur-[120px] rounded-full top-[-100px] left-[-100px]"
+      />
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "30px",
-        }}
-      >
-        <Link
-          to="/signin"
-          style={{
-            padding: "10px 16px",
-            borderRadius: "10px",
-            background: "#22d3ee",
-            color: "#000",
-            fontWeight: "700",
-            textDecoration: "none",
-          }}
-        >
-          Login
-        </Link>
+      <motion.div
+        animate={{ x: [0, -50, 50, 0], y: [0, 50, -50, 0] }}
+        transition={{ duration: 18, repeat: Infinity }}
+        className="absolute w-[500px] h-[500px] bg-cyan-500/20 blur-[120px] rounded-full bottom-[-100px] right-[-100px]"
+      />
+
+      {/* 🔝 NAVBAR */}
+      <div className="flex justify-between items-center px-10 py-6 relative z-10">
+        <h1 className="text-xl font-bold">VibeCraft ⚡</h1>
+
+        <div className="flex gap-4">
+          
+          {user ? (
+  <div className="flex items-center gap-3 cursor-pointer">
+    <img
+      src={user.avatar || "https://via.placeholder.com/40"}
+      alt="profile"
+      className="w-10 h-10 rounded-full border border-cyan-400"
+    />
+  </div>
+) : (
+  <Link
+    to="/signin"
+    className="px-4 py-2 rounded-lg bg-cyan-400 text-black font-bold"
+  >
+    Login
+  </Link>
+)}
+
+        </div>
       </div>
 
-
-      {/* ✅ CENTER CONTENT */}
-
-      <div
-        style={{
-          maxWidth: "900px",
-          margin: "0 auto",
-          textAlign: "center",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "42px",
-            fontWeight: "900",
-            color: "#fff",
-          }}
+      {/* 🚀 HERO */}
+      <div className="text-center mt-20 relative z-10">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-5xl font-extrabold"
         >
-          Ship full web projects with AI
-        </h1>
+          Build Full Stack Projects with AI ⚡
+        </motion.h1>
 
-        <p
-          style={{
-            color: "#cbd5e1",
-            marginTop: "10px",
-          }}
-        >
-          Generate, edit, preview, and publish in one place.
+        <p className="text-gray-400 mt-4">
+          Generate, edit, preview & deploy — all in one platform.
         </p>
 
-        <div style={{ marginTop: "20px" }}>
-
+        <div className="mt-6 flex justify-center gap-4">
           <Link
-            to="/signin"
-            style={{
-              padding: "12px 18px",
-              borderRadius: "12px",
-              background:
-                "linear-gradient(135deg,#22d3ee,#6366f1)",
-              color: "#000",
-              fontWeight: "800",
-              textDecoration: "none",
-              marginRight: "10px",
-            }}
+            to="/ai"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-500 text-black font-bold hover:scale-105 transition"
           >
             Start Building
           </Link>
 
           <Link
             to="/signup"
-            style={{
-              padding: "12px 18px",
-              borderRadius: "12px",
-              border: "1px solid #aaa",
-              color: "#fff",
-              textDecoration: "none",
-            }}
+            className="px-6 py-3 rounded-xl border border-gray-600 hover:border-cyan-400 transition"
           >
             Create Account
           </Link>
-
         </div>
       </div>
 
-
-      {/* ✅ GRID CENTER */}
-
-      <div
-        style={{
-          maxWidth: "900px",
-          margin: "60px auto",
-          display: "grid",
-          gridTemplateColumns: "repeat(3,1fr)",
-          gap: "14px",
-        }}
-      >
+      {/* ⚡ FEATURES GRID */}
+      <div className="max-w-5xl mx-auto mt-24 grid grid-cols-3 gap-6 px-6 relative z-10">
         {blocks.map((b, i) => (
-          <div
+          <motion.div
             key={i}
-            style={{
-              padding: "16px",
-              borderRadius: "12px",
-              background: "rgba(15,23,42,0.9)",
-              border: "1px solid rgba(148,163,184,0.2)",
-            }}
+            whileHover={{ scale: 1.05 }}
+            className="p-6 rounded-xl bg-white/5 backdrop-blur border border-gray-800 hover:border-cyan-400 transition"
           >
-            <div style={{ fontSize: "20px" }}>{b.icon}</div>
-
-            <div
-              style={{
-                fontWeight: "800",
-                marginTop: "6px",
-                color: "#fff",
-              }}
-            >
-              {b.title}
-            </div>
-
-            <div
-              style={{
-                fontSize: "13px",
-                color: "#cbd5e1",
-              }}
-            >
-              {b.desc}
-            </div>
-          </div>
+            <div className="text-2xl">{b.icon}</div>
+            <h3 className="font-bold mt-2">{b.title}</h3>
+            <p className="text-gray-400 text-sm">{b.desc}</p>
+          </motion.div>
         ))}
       </div>
 
-
-      {/* ✅ EXTRA CONTENT */}
-
-      <div
-        style={{
-          maxWidth: "800px",
-          margin: "40px auto",
-          textAlign: "center",
-          color: "#cbd5e1",
-        }}
-      >
-        <h2>Why use this builder?</h2>
-
-        <p>
-          Build full stack projects using AI, publish instantly,
-          share with community and manage users with session based auth.
+      {/* 🔥 EXTRA SECTION */}
+      <div className="max-w-4xl mx-auto mt-32 text-center px-6 relative z-10">
+        <h2 className="text-3xl font-bold mb-4">Why VibeCraft?</h2>
+        <p className="text-gray-400">
+          VibeCraft lets you build complete applications using AI prompts.
+          From idea to deployment — everything in one place.
         </p>
+      </div>
 
-        <p>
-          Perfect for college projects, portfolio, and real apps.
-        </p>
+      {/* 🧠 HOW IT WORKS */}
+      <div className="max-w-5xl mx-auto mt-24 grid grid-cols-3 gap-6 px-6 relative z-10">
+
+        {["Prompt AI", "Edit Code", "Deploy Project"].map((step, i) => (
+          <motion.div
+            key={i}
+            whileHover={{ y: -10 }}
+            className="p-6 rounded-xl bg-[#020617] border border-gray-800 text-center"
+          >
+            <h3 className="font-bold text-lg">{step}</h3>
+            <p className="text-gray-400 text-sm mt-2">
+              {i === 0 && "Describe your idea and AI builds it."}
+              {i === 1 && "Customize code with live editor."}
+              {i === 2 && "Publish instantly to the web."}
+            </p>
+          </motion.div>
+        ))}
+
+      </div>
+
+      {/* 🎯 CTA SECTION */}
+      <div className="text-center mt-32 mb-20 relative z-10">
+        <h2 className="text-3xl font-bold">Start your journey today 🚀</h2>
+
+        <Link
+          to="/signup"
+          className="inline-block mt-6 px-8 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-500 text-black font-bold hover:scale-110 transition"
+        >
+          Get Started Free
+        </Link>
       </div>
 
     </div>

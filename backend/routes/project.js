@@ -14,7 +14,7 @@ router.post('/save',requireAuth, async (req, res) => {
     
     const { name, files } = req.body;
 
-    const userId = req.session.userId ;
+    const userId = req.user._id ;
     console.log(userId);
 
     if (!userId) {
@@ -65,10 +65,10 @@ router.put("/update/:id",requireAuth,async(req,res)=> {
   try{
     console.log("yhan aage oye");
     const { name , files} = req.body;
-    console.log(req.session.userId)
+    console.log(req.user._id)
     const project = await Project.findByIdAndUpdate(
       {_id: req.params.id,
-        owner: req.session.userId,},
+        owner: req.user._id,},
 
       {
         name,
@@ -89,10 +89,10 @@ router.put("/update/:id",requireAuth,async(req,res)=> {
 router.delete("/delete/:id",requireAuth,async(req,res)=>{
   console.log("delete m aagye oyee")
   try{
-    console.log(req.session.userId)
+    console.log(req.user._id)
     const project = await Project.findOne({
     _id: req.params.id,
-    owner: req.session.userId,
+    owner: req.user._id,
   });
     res.json({
       message: "deleted"
@@ -108,10 +108,10 @@ router.delete("/delete/:id",requireAuth,async(req,res)=>{
 
 router.get("/:id",requireAuth,async(req,res) =>{
   try{
-    console.log(req.session.userId)
+    console.log(req.user._id)
     const project = await Project.findById({
       _id: req.params.id,
-      owner: req.session.userId,
+      owner: req.user._id,
     }
       
     );
@@ -120,9 +120,13 @@ router.get("/:id",requireAuth,async(req,res) =>{
       return res.status(404).json({
         message: "Project not found"
       });
+
+
+
+
     }
     if(
-      !project.isPublic && (!req.session.userId || project.owner.toString() !== req.session.userId)
+      !project.isPublic && (!req.user._id || project.owner.toString() !== req.user._id)
     ){
       return res.status(403).json({
         error: "Private",
@@ -139,9 +143,9 @@ router.get("/:id",requireAuth,async(req,res) =>{
 
 router.get("/",requireAuth, async (req, res) => {
   try {
-    console.log(req.session.userId)
+    console.log(req.user._id)
     const projects = await Project.find({
-      owner: req.session.userId,
+      owner: req.user._id,
     });
     res.json(projects);
   } catch (err) {
@@ -158,7 +162,7 @@ router.put("/toggle/:id",requireAuth,async(req,res) => {
   console.log("hellooo")
   const project = await Project.findOne({
     _id: req.params.id,
-    owner: req.session.userId,
+    owner: req.user._id,
   });
   if (!project) {
     console.log("not foundd");
@@ -178,7 +182,7 @@ router.put("/add-to-community/:id", requireAuth , async(req,res) => {
   const { communityId } = req.body;
   const project = await Project.findById(req.params.id);
   const community = await Project.findById(communityId);
-  if(!community.members.includes(req.session.userId)){
+  if(!community.members.includes(req.user._id)){
     return res.status(403).json({
       error: "Not a member",
     });

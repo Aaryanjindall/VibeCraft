@@ -5,10 +5,9 @@ const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 require('dotenv').config();
-
 // Import database connection
 const connectDB = require('./config/database');
-
+const User = require("./models/User");
 // Import routes
 const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/posts');
@@ -20,9 +19,12 @@ const publishRoutes = require('./routes/publish');
 const projectRoutes = require('./routes/project');
 const deployRoutes = require('./routes/deploy');
 const communityRoutes = require('./routes/community');
-
+const passport = require("passport");
+require("./config/passport");
 // Initialize app
+
 const app = express();
+
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/aiAuth';
 
@@ -48,6 +50,15 @@ app.use(session({
   store: MongoStore.create({ mongoUrl: MONGO_URI }),
   cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
 }));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.serializeUser((user, done) => {
+  done(null, user._id);
+});
+passport.deserializeUser(async (id, done) => {
+  const user = await User.findById(id);
+  done(null, user);
+});
 
 // Health check endpoints
 app.get('/health', (req, res) => {

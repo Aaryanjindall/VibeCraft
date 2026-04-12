@@ -152,6 +152,9 @@ const Signup = () => {
               Sign In
             </Link>
           </p>
+          <button onClick={() => window.open("http://localhost:5001/api/auth/google", "_self")}>
+  Login with Google
+</button>
         </div>
       </div>
     </div>

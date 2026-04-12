@@ -77,7 +77,7 @@ router.post('/',requireAuth, async (req, res) => {
   try {
     const { prompt } = req.body;
     console.log("part1");
-    console.log(req.session.userId);
+    console.log(req.user._id);
     if (!prompt) throw new Error("Prompt is required");
 
     const enhancedPrompt = `

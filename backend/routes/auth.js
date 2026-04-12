@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const passport = require("passport");
 require("dotenv").config();
 
-// Admin credentials
+
 const ADMIN_CREDENTIALS = {
   email: process.env.ADMIN_EMAIL || "admin@aivibe.com",
   password: process.env.ADMIN_PASSWORD || "admin123",
@@ -12,7 +13,7 @@ const ADMIN_CREDENTIALS = {
 
 // ================= SIGNgUP =================
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", async (req, res,next) => {
   try {
     const { username, email, password } = req.body;
 
@@ -26,17 +27,26 @@ router.post("/signup", async (req, res) => {
     const user = new User({ username, email, password });
     await user.save();
     // session store
-    req.session.userId = user._id;
-    res.json({
-      message: "Signup success",
-      user: { username, email },
+    req.login(user, (err) => { // 🔥 CHANGED
+      if (err) return next(err);
+
+      return res.json({
+        message: "Signup success",
+        user: {
+          username: user.username,
+          email: user.email,
+        },
+      });
     });
+
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Server error" });
   }
 });
+
 // ================= LOGIN =================
-router.post("/login", async (req, res) => {
+router.post("/login", async (req, res,next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -47,34 +57,55 @@ router.post("/login", async (req, res) => {
     if (!match) {
       return res.status(400).json({ error: "Invalid" });
     }  // session
-    req.session.userId = user._id;
-    res.json({
-      message: "Login success",
-      user: {
-        username: user.username,
-        email: user.email,
-      },
+    req.login(user, (err) => { // 🔥 CHANGED
+      if (err) return next(err);
+
+      return res.json({
+        message: "Login success",
+        user: {
+          username: user.username,
+          email: user.email,
+        },
+      });
     });
+
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Server error" });
   }
 });
+
 // ================= LOGOUT =================
 router.post("/logout", (req, res) => {
-  req.session.destroy(() => {
-    res.clearCookie("connect.sid");
-    res.json({ message: "Logout success" });
+  req.logout((err) => { 
+    if (err) return res.status(500).json({ error: "Logout error" });
+    req.session.destroy(() => {
+      res.clearCookie("connect.sid");
+      res.json({ message: "Logout success" });
+    });
   });
 });
 
 // ================= CURRENT USER =================
 
 router.get("/me", async (req, res) => {
-  if (!req.session.userId) {
+  if (!req.user) {
     return res.status(401).json({ error: "Not login" });
   }
-  const user = await User.findById(req.session.userId).select("-password");
+  const user = { ...req.user._doc };
+  delete user.password;
   res.json({ user });
 });
 
+router.get("/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+router.get("/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "http://localhost:5173/error"
+  }),
+  (req, res) => {  
+    res.redirect("http://localhost:5173/app");
+  }
+);
 module.exports = router;
