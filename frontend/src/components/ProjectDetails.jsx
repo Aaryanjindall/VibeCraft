@@ -8,16 +8,17 @@ const ProjectDetails = ({ project,onOpen }) => {
 
   const {deploys,deploy,loadDeploys,deploynet} = useDeploy();
   const [showDropdown,setShowDropdown] = useState(false);
- useEffect(() => {
-  loadDeploys();
-  loadCommunities(); 
-}, []);
+
   const {deleteProject} = useProject();
   const {addProjectToCommunity, communities, loadCommunities} = useCommunity();
   const handleAdd = async (communityId) => {
-  setshowDropdown(false);
+  setShowDropdown(false);
   await addProjectToCommunity(project._id, communityId);
   alert("Added to Community ");
+   useEffect(() => {
+  loadDeploys();
+  loadCommunities(); 
+}, []);
 };
   return (
     <>
