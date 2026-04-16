@@ -86,22 +86,31 @@ router.put("/update/:id",requireAuth,async(req,res)=> {
   }
 });
 
-router.delete("/delete/:id",requireAuth,async(req,res)=>{
-  console.log("delete m aagye oyee")
-  try{
-    console.log(req.user._id)
+router.delete("/delete/:id", requireAuth, async (req, res) => {
+  console.log("delete m aagye oyee");
+
+  try {
     const project = await Project.findOne({
-    _id: req.params.id,
-    owner: req.user._id,
-  });
-    res.json({
-      message: "deleted"
+      _id: req.params.id,
+      owner: req.user._id,
     });
-    console.log("delete hogya oye!!")
-  }
-  catch (err) {
+
+    if (!project) {
+      return res.status(404).json({
+        message: "Project not found",
+      });
+    }
+
+    await project.deleteOne(); 
+
+    res.json({
+      message: "deleted",
+    });
+
+    console.log("delete hogya oye!!");
+  } catch (err) {
     res.status(500).json({
-      message: "error"
+      message: "error",
     });
   }
 });
@@ -125,13 +134,13 @@ router.get("/:id",requireAuth,async(req,res) =>{
 
 
     }
-    if(
-      !project.isPublic && (!req.user._id || project.owner.toString() !== req.user._id)
-    ){
-      return res.status(403).json({
-        error: "Private",
-      });
-    }
+    // if(
+    //   !project.isPublic && (!req.user._id || project.owner.toString() !== req.user._id)
+    // ){
+    //   return res.status(403).json({
+    //     error: "Private",
+    //   });
+    // }
     res.json(project);
   }
   catch(err){

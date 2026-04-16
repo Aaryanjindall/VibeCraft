@@ -19,7 +19,7 @@ const MyProject = () => {
   const Navigate = useNavigate();
   const handleOpen = async (id) => {
     await loadProject(id);
-    Navigate("/app"); // redirect
+    Navigate("/ai"); // redirect
   };
 
   // 🔥 FILTER LOGIC

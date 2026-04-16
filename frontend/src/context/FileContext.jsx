@@ -80,7 +80,7 @@ export const FileProvider = ({ children }) => {
         : `http://localhost:5001/api/project/save`
 
       const method = currentProject ? 'PUT' : 'POST'
-
+      console.log(method);
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -92,7 +92,7 @@ export const FileProvider = ({ children }) => {
       })
 
       const data = await res.json()
-
+      console.log("save hogya");
       if (!currentProject && data.project) {
         setCurrentProject({
           id: data.project._id,

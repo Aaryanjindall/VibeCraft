@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { CommSidebar } from "../components/CommSidebar";
 import { CommunityMembers } from "../components/CommunityMembers";
+import { useParams } from "react-router-dom";
 
-const CommunityExplore = ({ id }) => {
+const CommunityExplore = () => {
   const [communitysidebar, setcommunitysidebar] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const { id } = useParams();
   return (
     <div className="h-screen bg-[#0f172a] text-white">
 

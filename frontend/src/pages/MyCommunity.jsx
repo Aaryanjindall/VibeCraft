@@ -7,36 +7,39 @@ import CommunityExplore from "./CommunityExplore";
 
 const MyCommunity = () => {
   const navigate = useNavigate();
-
   const {
     loadCommunities,
     communities,
-    createCommunity
+    joinCommunity,
+    createCommunity,
+    exploreCommunities, setExploreCommunities,
+    exploreCommunitiesFn
   } = useCommunity();
 
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("My Communities");
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState("");
-
+  const [filter,setfilter] = useState([]);
+ 
   useEffect(() => {
     loadCommunities();
   }, []);
 
-  // 🔥 FILTER
-  const filteredCommunities = Array.isArray(communities)
-  ? communities.filter((c) => {
-      if (activeTab === "created") return c.type === "created";
-      if (activeTab === "other") return c.type === "other";
-      return true;
-    })
-  : [];
-
+useEffect(() => {
+  if (activeTab === "My Communities") {
+    setfilter(communities);
+  } else {
+    setfilter(exploreCommunities);
+  }
+}, [activeTab, communities, exploreCommunities]);
+useEffect(() => {
+  if (activeTab === "Explore New") {
+    exploreCommunitiesFn();
+  }
+}, [activeTab]);
   // 🔥 OPEN PAGE
   const handleOpen = (id) => {
-    <CommunityExplore 
-    id={id}
-    />
-    navigate(`/community/explore/${id}`);
+    navigate(`/ai/community/explore/${id}`);
   };
 
   // 🔥 CREATE COMMUNITY
@@ -54,7 +57,7 @@ const MyCommunity = () => {
       {/* 🔥 NAVBAR */}
       <Navbar />
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 min-h-0">
 
         {/* 🔥 LEFT SIDEBAR */}
         <div className="w-[220px] bg-[#020617] border-r border-[#334155] p-4">
@@ -71,13 +74,13 @@ const MyCommunity = () => {
         </div>
 
         {/* 🔥 MAIN CONTENT */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6 overflow-y-auto">
 
           <h1 className="text-2xl font-semibold mb-5">🌐 Communities</h1>
 
-          {/* 🔥 TABS */}
+         
           <div className="flex gap-3 mb-6">
-            {["all", "created", "other"].map((tab) => (
+            {["My Communities", "Explore New"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -94,7 +97,9 @@ const MyCommunity = () => {
 
           {/* 🔥 GRID */}
           <CommunityGrid
-            communities={filteredCommunities}
+            communities={filter}
+            type={activeTab}
+            joinCommunity={joinCommunity}
             onOpen={handleOpen}
           />
 

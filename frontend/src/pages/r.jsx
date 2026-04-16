@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useFiles } from '../context/FileContext'
 import FileManager from '../components/FileManager'
 import Editorr from '../components/Editor'
@@ -19,18 +19,15 @@ const Builder = () => {
     deleteFile,
     setFiles,
     runFiles,
-    currentProject
+    currentProject,
+    handleSave
   } = useFiles()
 
   const navigate = useNavigate()
   const { handleGenerate,loadProject } = useProject()
+  const{projectId} = useParams();
+  useEffect(() => { const lastId = localStorage.getItem("lastProjectId"); if (projectId) { loadProject(projectId); localStorage.setItem("lastProjectId", projectId); } else if (lastId && lastId !== "undefined") { loadProject(lastId); } },[projectId]);
   
-  useEffect(()=>{
-    const lastId = localStorage.getItem("lastProjectId");
-    if(lastId && lastId !== "undefined"){
-      loadProject(lastId);
-    }
-  },[]);
   
   useEffect(()=>{
     const handleKey = (e) => {

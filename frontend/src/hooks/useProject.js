@@ -85,7 +85,7 @@ export const useProject = () => {
       credentials: "include"
     }
   );
-  // getProjects();
+  getProjects();
   if (
     currentProject &&
     currentProject.id === id

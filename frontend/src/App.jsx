@@ -26,7 +26,7 @@ function App() {
       <Route index element={<Builder />} />
       <Route path="projects" element={<ProtectedRoute><MyProject /></ProtectedRoute>} />
       <Route path="mycommunity" element={<ProtectedRoute><MyCommunity /></ProtectedRoute>} />
-      <Route path="community/explore/*" element={<ProtectedRoute><CommunityExplore /></ProtectedRoute>} />
+      <Route path="community/explore/:id" element={<ProtectedRoute><CommunityExplore /></ProtectedRoute>} />
     </Route>
     <Route path="*" element={<ErrorPage />} />
   </Routes>

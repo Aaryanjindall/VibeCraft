@@ -105,7 +105,7 @@ router.get("/google/callback",
     failureRedirect: "http://localhost:5173/error"
   }),
   (req, res) => {  
-    res.redirect("http://localhost:5173/app");
+    res.redirect("http://localhost:5173/ai");
   }
 );
 module.exports = router;

@@ -2,23 +2,29 @@ import { useEffect, useState } from "react";
 import { useDeploy } from "../hooks/useDeploy";
 import { ExternalLink, Trash2 } from "lucide-react";
 import { useProject } from "../hooks/useProject";
+import { useCommunity } from "../hooks/useCommunity";
 
 const ProjectDetails = ({ project,onOpen }) => {
 
   const {deploys,deploy,loadDeploys,deploynet} = useDeploy();
-  useEffect(()=> {
-    loadDeploys();
-  },[]);
+  const [showDropdown,setShowDropdown] = useState(false);
+ useEffect(() => {
+  loadDeploys();
+  loadCommunities(); 
+}, []);
   const {deleteProject} = useProject();
+  const {addProjectToCommunity, communities, loadCommunities} = useCommunity();
+  const handleAdd = async (communityId) => {
+  setshowDropdown(false);
+  await addProjectToCommunity(project._id, communityId);
+  alert("Added to Community ");
+};
   return (
     <>
       <h2 className="text-xl font-semibold mb-2">{project.name}</h2>
-
       <p className="text-gray-400 text-sm mb-5">
         {new Date(project.createdAt).toDateString()}
       </p>
-
-      {/* ACTIONS */}
       <div className="space-y-3">
 
           <div>
@@ -47,10 +53,25 @@ const ProjectDetails = ({ project,onOpen }) => {
           </div>
         ))}
           </div>
-
-        <button className="w-full bg-green-500 py-2 rounded-lg">
+        <div className="relative">
+        <button className="w-full bg-green-500 py-2 rounded-lg"
+        onClick={() => setShowDropdown(!showDropdown)}>
           + Add to Community
         </button>
+        {showDropdown && (
+  <div className="absolute left-0 right-0 mt-2 bg-[#1e293b] border border-[#334155] rounded-lg z-50 max-h-60 overflow-y-auto">
+  {communities.map((c) => (
+    <div
+      key={c._id}
+      onClick={() => handleAdd(c._id)}
+      className="p-2 hover:bg-[#334155] cursor-pointer rounded"
+    >
+      {c.name}
+    </div>
+  ))}
+</div>
+)}
+</div>
         <div>
           <h3>Edit Project</h3>
           <button
@@ -77,9 +98,6 @@ const ProjectDetails = ({ project,onOpen }) => {
         </button>
           
         </div>
-        <button className="text-red-400 mt-4">
-          🗑 Delete Project
-        </button>
 
       </div>
     </>

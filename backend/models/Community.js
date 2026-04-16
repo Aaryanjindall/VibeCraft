@@ -59,6 +59,26 @@ const communitySchema = new mongoose.Schema({
     },
   ],
 
+  projects: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+      },
+    ],
+    roles: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        role: {
+          type: String,
+          enum: ["admin", "contributor", "member"],
+          default: "member",
+        },
+      },
+    ],
+
   createdAt: {
     type: Date,
     default: Date.now,

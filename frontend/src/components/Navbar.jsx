@@ -4,7 +4,7 @@ import UserProfile from "./userProfle";
 
 
 const Navbar = () => {
-    const {files,setRunFiles,runFiles,handleSave} = useFiles();
+    const {files,setRunFiles,runFiles,handleSave,setunsaved,setcurrentProject,setFiles} = useFiles();
     return(
         <div className="h-[60px] bg-[#020617] border-b border-[#1e293b] flex items-center justify-between px-4">
 
@@ -20,6 +20,14 @@ const Navbar = () => {
         <button className="btn">🚀</button>
         <button className="btn" onClick={() => runProjectInNewTab(runFiles)}>🔗</button>
         <button className="btn" onClick={handleSave}>💾</button>
+        <button onClick={() => {
+  setFiles({});
+  setRunFiles({});
+  setcurrentProject(null);
+  setunsaved(false);
+  localStorage.removeItem("lastProjectId");
+}}>Clear
+</button>
       </div>
 
       {/* PROFILE */}
