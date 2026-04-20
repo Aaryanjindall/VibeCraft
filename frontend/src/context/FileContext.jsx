@@ -69,7 +69,7 @@ export const FileProvider = ({ children }) => {
   }, [files])
 
   // ✅ handle save
-  const handleSave = async () => {
+  const handleSave = async (prompt) => {
     try {
       if (!files || Object.keys(files).length === 0) return
 
@@ -86,7 +86,7 @@ export const FileProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          name: currentProject?.name || 'New AI Project',
+          name: currentProject?.name || prompt,
           files
         })
       })

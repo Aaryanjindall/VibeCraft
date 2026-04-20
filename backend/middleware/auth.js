@@ -1,3 +1,5 @@
+const Community = require("../models/Community");
+
 // Authentication middleware
 const requireAuth = (req, res, next) => {
   if (!req.user) {
@@ -13,4 +15,14 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-module.exports = { requireAuth, requireAdmin };
+const loadCommunity = async(req,res,next) => {
+  const id = req.params.id;
+  const community = await Community.findById(id);
+  console.log(id);
+  if(!community){
+    return res.status(404).json({message: "Community not found"});
+  }
+  req.community = community;
+  next();
+}
+module.exports = { requireAuth, requireAdmin , loadCommunity };

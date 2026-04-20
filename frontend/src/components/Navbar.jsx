@@ -4,7 +4,7 @@ import UserProfile from "./userProfle";
 
 
 const Navbar = () => {
-    const {files,setRunFiles,runFiles,handleSave,setunsaved,setcurrentProject,setFiles} = useFiles();
+    const {files,setRunFiles,runFiles,handleSave,setunsaved,setCurrentProject,setFiles} = useFiles();
     return(
         <div className="h-[60px] bg-[#020617] border-b border-[#1e293b] flex items-center justify-between px-4">
 
@@ -23,7 +23,7 @@ const Navbar = () => {
         <button onClick={() => {
   setFiles({});
   setRunFiles({});
-  setcurrentProject(null);
+  setCurrentProject(null);
   setunsaved(false);
   localStorage.removeItem("lastProjectId");
 }}>Clear

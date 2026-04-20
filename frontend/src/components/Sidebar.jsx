@@ -7,6 +7,7 @@ const Sidebar = () => {
     { name: "Builder", path: "/ai"},
     { name: "Projects" , path: "/ai/projects"},
     { name: "Communities" , path: "/ai/Mycommunity"},
+    { name: "Explore" , path: "/ai/explore"}
   ];
   return(
     <div className="w-[220px] h-screen bg-[#020617] text-white p-4 border-r border-[#334155] fixed left-0 top-0">

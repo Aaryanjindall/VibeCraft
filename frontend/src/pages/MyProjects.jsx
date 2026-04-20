@@ -24,10 +24,11 @@ const MyProject = () => {
 
   // 🔥 FILTER LOGIC
   const filteredProjects = Projects.filter((p) => {
-    if (activeTab === "created") return p.type === "created";
-    if (activeTab === "forked") return p.type === "forked";
+    if (activeTab === "created") return p.isFork === false;
+    if (activeTab === "forked") return p.isFork === true;
     return true;
   });
+
 
   return (
     <div className="h-screen bg-gradient-to-br from-[#0f172a] to-[#020617] text-white flex flex-col">
@@ -77,7 +78,6 @@ const MyProject = () => {
     });
   }}
             onOpen={handleOpen}
-            
           />
         </div>
 

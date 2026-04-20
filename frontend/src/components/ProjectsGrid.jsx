@@ -5,8 +5,7 @@ import { useFiles } from "../context/FileContext";
 
 
 const ProjectsGrid = ({ projects,onSelect,onOpen }) => {
-  const { loadProject } = useProject();
-  const {deleteProject} = useFiles();
+  const { loadProject,deleteProject } = useProject();
   const navigate = useNavigate();
 
   const handleOpen = async (id) => {

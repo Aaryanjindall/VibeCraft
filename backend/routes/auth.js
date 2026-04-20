@@ -97,15 +97,21 @@ router.get("/me", async (req, res) => {
   res.json({ user });
 });
 
-router.get("/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+router.get("/google",(req,res,next)=>{
+  const redirect = req.query.redirect || "/ai";
+  req.session.redirectAfterLogin = redirect;
+  next();
+},
+  passport.authenticate("google", { scope: ["profile", "email"], })
 );
 router.get("/google/callback",
   passport.authenticate("google", {
     failureRedirect: "http://localhost:5173/error"
   }),
-  (req, res) => {  
-    res.redirect("http://localhost:5173/ai");
+  (req, res) => {
+    const redirect = req.session.redirectAfterLogin || "/ai";
+    req.session.redirectAfterLogin = null;  
+    res.redirect(`http://localhost:5173${redirect}`);
   }
 );
 module.exports = router;

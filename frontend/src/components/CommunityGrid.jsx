@@ -1,8 +1,10 @@
 import { useUser } from "../context/UserProvider";
+import { useCommunity } from "../hooks/useCommunity";
 import { CommunityCard } from "./CommunityCard";
 
 const CommunityGrid = ({ communities, type, joinCommunity, onOpen }) => {
   const { user } = useUser();
+const {deleteCommunity} = useCommunity();
 
   // 🛑 safety check
   if (!user) return null;
@@ -18,6 +20,7 @@ const CommunityGrid = ({ communities, type, joinCommunity, onOpen }) => {
             type={type}
             joinCommunity={joinCommunity}
             onOpen={onOpen}
+           
           />
         ))}
       </div>
@@ -50,6 +53,7 @@ const CommunityGrid = ({ communities, type, joinCommunity, onOpen }) => {
               type={type}
               joinCommunity={joinCommunity}
               onOpen={onOpen}
+              deleteCommunity={deleteCommunity}
             />
           ))}
         </div>

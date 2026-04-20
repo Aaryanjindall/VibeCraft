@@ -2,10 +2,12 @@ import { useState } from "react";
 import { CommSidebar } from "../components/CommSidebar";
 import { CommunityMembers } from "../components/CommunityMembers";
 import { useParams } from "react-router-dom";
+import { CommunityProject } from "../components/CommunityProject";
 
 const CommunityExplore = () => {
-  const [communitysidebar, setcommunitysidebar] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [activeView, setActiveView] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { id } = useParams();
   return (
     <div className="h-screen bg-[#0f172a] text-white">
@@ -13,7 +15,7 @@ const CommunityExplore = () => {
       {/* TOP BUTTON */}
       <div className="p-4">
         <button
-          onClick={() => setcommunitysidebar(!communitysidebar)}
+          onClick={() => setSidebarOpen(!sidebarOpen)}
           className="bg-indigo-500 px-3 py-1 rounded"
         >
           Select Project
@@ -22,16 +24,16 @@ const CommunityExplore = () => {
 
       {/* SIDEBAR */}
       <CommSidebar
-        id={id}
-        communitysidebar={communitysidebar}
-        onSelect={(project) => {
-          setSelectedProject(project);
-          setcommunitysidebar(false); // close after select
-        }}
+        communityId={id}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        setActiveView={setActiveView}
+        setSelectedProject={setSelectedProject}
+        activeView={activeView}
       />
 
       {/* MAIN CONTENT */}
-      {selectedProject ? (
+      {/* {selectedProject ? (
         <div className="p-6">
           <h2 className="text-xl font-semibold">
             Project: {selectedProject.name}
@@ -44,7 +46,24 @@ const CommunityExplore = () => {
         <div className="flex items-center justify-center h-full text-gray-400">
           Select a project to continue
         </div>
-      )}
+      )} */}
+
+      {/* {selectedCommunityProject && (
+      <CommunityProject
+       communityId={id}
+       projectId={selectedCommunityProject}
+       />
+    )} */}
+
+    {activeView === "Community" && 
+     <CommunityMembers 
+      id={id}
+    />}
+    {activeView === "CommunityProject" && 
+    <CommunityProject
+      communityId={id}
+      projectId={selectedProject}
+    />}
     </div>
   );
 };

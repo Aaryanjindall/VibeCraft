@@ -12,6 +12,8 @@ import MyCommunity from './pages/MyCommunity';
 import CommunityExplore from './pages/CommunityExplore';
 import AuthPage from './pages/Auth';
 import VibeLayout from './pages/VibeLayout';
+import Explore from './pages/Explore';
+import { Viewerpage } from './pages/ViewerPage';
 function App() {
   return (
     <Router>
@@ -27,8 +29,10 @@ function App() {
       <Route path="projects" element={<ProtectedRoute><MyProject /></ProtectedRoute>} />
       <Route path="mycommunity" element={<ProtectedRoute><MyCommunity /></ProtectedRoute>} />
       <Route path="community/explore/:id" element={<ProtectedRoute><CommunityExplore /></ProtectedRoute>} />
+      <Route path="Explore" element={<Explore/>}/>
     </Route>
     <Route path="*" element={<ErrorPage />} />
+    <Route path="/viewer/:id" element={<Viewerpage/>}/>
   </Routes>
 </Router>
         // {/* PROTECTED */}

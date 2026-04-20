@@ -4,63 +4,49 @@ const Project = require("../models/Project");
 const { requireAuth } = require("../middleware/auth");
 const { default: mongoose } = require("mongoose");
 const Deploy = require("../models/Deploy");
-
 // import { route } from "./posts";
 const crypto = require("crypto");
-
 router.post('/save',requireAuth, async (req, res) => {
   try {
     console.log("yhan tak aagya");
-    
     const { name, files } = req.body;
-
     const userId = req.user._id ;
     console.log(userId);
-
     if (!userId) {
       return res.status(401).json({
         error: "Not logged in",
       });
     }
-
     if (!name || !files) {
       return res.status(400).json({
         error: "Missing fields",
       });
     }
-
     const slug =
       name.toLowerCase().replace(/\s+/g, "-") +
       "-" +
       Date.now();
-
     const project = new Project({
       name,
       slug,
       owner: userId,
       files,
       members: [userId],
+      isPublic: true
     });
-
     await project.save();
     console.log("saved");
-
     res.json({
       message: "Project saved",
       project,
     });
-
   } catch (err) {
-
     console.log(err);
-
     res.status(500).json({
       error: "Server error",
     });
-
   }
 });
-
 router.put("/update/:id",requireAuth,async(req,res)=> {
   try{
     console.log("yhan aage oye");
@@ -85,6 +71,57 @@ router.put("/update/:id",requireAuth,async(req,res)=> {
     });
   }
 });
+router.get("/public",async(req,res) => {
+  console.log("helooooo");
+  try{
+    const projects = await Project.find({
+      isPublic: true,
+    });
+    console.log(projects);
+    res.json(projects);
+  }catch(err){
+    console.log("nhi aara");
+    res.status(500).json({
+      message: "nhi aara bsdk"
+    });
+  }
+})
+
+router.post("/fork/:id",requireAuth,async(req,res)=> {
+  try{
+    const orig = await Project.findById(req.params.id);
+    if(!orig){
+      return res.status(404).json({message: "Not Found"});
+    }
+    if(!orig.isPublic){
+      return res.status(403).json({message: "Private Project"});
+    }
+    const newProject = new Project({
+      name: orig.name + " (PublicFork)",
+      slug: orig.slug + "-fork-" + Date.now(),
+      files: JSON.parse(JSON.stringify(orig.files)),
+      owner: req.user._id,
+      members: [req.user._id],
+      isPublic: false,
+      isFork: true,
+      parentProject: orig._id,
+      promptHistory: [],
+      deployHistory: []
+    });
+    await newProject.save();
+    await Project.findByIdAndUpdate(orig._id, {
+      $inc: { forkCount: 1 },
+    });
+    res.json({
+      message: "Fork created",
+      project: newProject,
+    });
+  }
+  catch(err){
+    res.status(500).json({message: "error"});
+  }
+});
+
 
 router.delete("/delete/:id", requireAuth, async (req, res) => {
   console.log("delete m aagye oyee");
@@ -115,6 +152,26 @@ router.delete("/delete/:id", requireAuth, async (req, res) => {
   }
 });
 
+router.get("/view/:id",async(req,res)=> {
+  try{
+    const project = await Project.findById(req.params.id);
+
+  if(!project){
+    return res.status(404).json({ message: "Not found" });
+  }
+
+  if(!project.isPublic){
+    return res.status(403).json({ message: "Private project" });
+  }
+
+  res.json(project);
+  }
+  catch(err){
+    res.json(401).json({
+      message: "error"
+    })
+  }
+})
 router.get("/:id",requireAuth,async(req,res) =>{
   try{
     console.log(req.user._id)
@@ -129,10 +186,6 @@ router.get("/:id",requireAuth,async(req,res) =>{
       return res.status(404).json({
         message: "Project not found"
       });
-
-
-
-
     }
     // if(
     //   !project.isPublic && (!req.user._id || project.owner.toString() !== req.user._id)
@@ -150,6 +203,7 @@ router.get("/:id",requireAuth,async(req,res) =>{
   }
 });
 
+
 router.get("/",requireAuth, async (req, res) => {
   try {
     console.log(req.user._id)
@@ -166,6 +220,7 @@ router.get("/",requireAuth, async (req, res) => {
   }
 
 });
+
 
 router.put("/toggle/:id",requireAuth,async(req,res) => {
   console.log("hellooo")

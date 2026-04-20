@@ -1,11 +1,12 @@
-import { ExternalLink } from "lucide-react";
+import { ExternalLink,DeleteIcon,Delete, LucideDelete, Trash2 } from "lucide-react";
 import { useUser } from "../context/UserProvider";
 
 export const CommunityCard = ({
   community,
   onOpen,
   joinCommunity,
-  type
+  type,
+  deleteCommunity
 }) => {
   const { user } = useUser();
 
@@ -62,6 +63,12 @@ export const CommunityCard = ({
           <ExternalLink size={16} />
           Explore
         </button>
+      )}
+      {isOwner && (
+        <button onClick={(e)=> {e.stopPropagation(); 
+          deleteCommunity(community._id)
+        }
+        }><Trash2 size={16} /></button>
       )}
     </div>
   );

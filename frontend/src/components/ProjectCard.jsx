@@ -1,10 +1,9 @@
 import { Trash2, ExternalLink, MoreHorizontal } from "lucide-react";
 import { useProject } from "../hooks/useProject";
 const emojis = ["🚀", "🔥", "💡", "⚡", "🎯"];
-const ProjectCard = ({ project, onOpen, onDelete ,onSelect }) => {
+const ProjectCard = ({ project, onOpen, deleteProject ,onSelect }) => {
     const randomEmoji = emojis[project._id % emojis.length];
-    const{deleteProject} = useProject();
-    
+   
   return (
     <div 
     onClick={()=> onSelect(project)}

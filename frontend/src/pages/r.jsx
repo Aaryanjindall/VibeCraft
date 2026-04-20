@@ -33,7 +33,7 @@ const Builder = () => {
     const handleKey = (e) => {
       if((e.ctrlKey || e.metaKey) && e.key === "s"){
         e.preventDefault();
-        handleSave();
+        handleSave(prompt);
       }
     };
     window.addEventListener(
@@ -101,7 +101,6 @@ const Builder = () => {
           />
         </div>
 
-        {/* 🔥 PREVIEW */}
         <div className="w-[35%] bg-[#020617] border-l border-[#1e293b]">
           <PreviewPanel files={runFiles} />
         </div>

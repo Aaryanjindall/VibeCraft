@@ -26,6 +26,22 @@ const projectSchema = new mongoose.Schema(
       default: false,
     },
 
+    isFork: {
+      type: Boolean,
+      default: false
+    },
+
+    forkCount: {
+      type: Number,
+      default: 0
+    },
+
+    parentProject: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+      default: null
+    },
+
     community: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Community",

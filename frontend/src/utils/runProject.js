@@ -18,7 +18,7 @@ export const runProjectInNewTab = (files) => {
   const blob = new Blob([html], { type: "text/html" });
 
   const url = URL.createObjectURL(blob);
-
+  console.log(url);
   window.open(url, "_blank");
 
 };

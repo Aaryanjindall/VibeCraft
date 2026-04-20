@@ -6,6 +6,7 @@ export const useProject = () => {
   const [Projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const {files,setFiles,runFiles,setRunFiles,currentProject,setCurrentProject,unsaved,setUnsaved} = useFiles();
+  const [Publicprojects,setPublicprojects] = useState([]);
 
   const handleGenerate = async (prompt) => {
     if (!prompt.trim()) return;
@@ -60,6 +61,34 @@ export const useProject = () => {
     }
   };
 
+
+  const handleFork = async(id) => {
+    const res = await fetch(
+      "http://localhost:5001/api/project/fork/"+ id,{
+        method: "POST",
+        credentials: "include",
+      } 
+    )
+    const data = await res.json();
+    alert("Forked successfully");
+  }
+
+
+  const loadpublic = async() => {
+    console.log("yhan se jara rha")
+    const res = await fetch(
+      "http://localhost:5001/api/project/public",{
+        credentials: "include",
+        method: "GET"
+      }
+    );
+    const data = await res.json();
+    console.log(data);
+    console.log("yhan se jara rha")
+    setPublicprojects(Array.isArray(data) ? data : []);
+  };
+
+
   const getProjects = async () => {
     const res = await fetch(
       "http://localhost:5001/api/project",
@@ -104,6 +133,9 @@ export const useProject = () => {
     loadProject,
     handleGenerate,
     loading,
-    deleteProject
+    deleteProject,
+    loadpublic,
+    Publicprojects,
+    handleFork 
   };
 };
