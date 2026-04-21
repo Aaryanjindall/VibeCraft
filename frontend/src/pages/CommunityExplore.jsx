@@ -3,6 +3,8 @@ import { CommSidebar } from "../components/CommSidebar";
 import { CommunityMembers } from "../components/CommunityMembers";
 import { useParams } from "react-router-dom";
 import { CommunityProject } from "../components/CommunityProject";
+import PostFeed from "../components/PostFeed";
+import CreatePost from "../components/CreatePost";
 
 const CommunityExplore = () => {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -55,10 +57,26 @@ const CommunityExplore = () => {
        />
     )} */}
 
-    {activeView === "Community" && 
-     <CommunityMembers 
-      id={id}
-    />}
+    {activeView === "Community" && (
+  <div className="flex h-[calc(100vh-60px)] gap-4 p-4">
+
+    {/* LEFT → CREATE POST */}
+    <div className="w-[250px] bg-[#020617] p-3 rounded-lg">
+      <CreatePost communityId={id} />
+    </div>
+
+    {/* CENTER → POSTS */}
+    <div className="flex-1 overflow-y-auto">
+      <PostFeed communityId={id} />
+    </div>
+
+    {/* RIGHT → MEMBERS */}
+    <div className="w-[250px] bg-[#020617] p-3 rounded-lg">
+      <CommunityMembers id={id} />
+    </div>
+
+  </div>
+)}
     {activeView === "CommunityProject" && 
     <CommunityProject
       communityId={id}

@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { useFiles } from "../context/FileContext";
+import { toast } from "react-toastify";
 
 export const useDeploy = () => {
 
     const [deploys,setDeploys] = useState([]);
     const [deployStatus, setDeployStatus] = useState("");
-    const {currentProject,
-        setCurrentProject} = useFiles();
+    const {currentProject, setCurrentProject} = useFiles();
 
 const deploy = async() => {
   try{
   if(!currentProject){
     return;
   }
-  setDeployStatus()
+  setDeployStatus("Deploying...");
   const id = currentProject.id;
   const res = await fetch("http://localhost:5001/api/deploy/internal/"+id,
   {
@@ -22,39 +22,50 @@ const deploy = async() => {
   }
 );
   const data = await res.json();
+  setDeployStatus("Success");
+  toast.success("Deployed SuccessFully")
+  await loadDeploys();
   const url = data.url;
   navigator.clipboard.writeText(url);
   window.open(url,'_blank').focus();
   
 }catch(err){
-  console.log(err);
+  setDeployStatus("Error");
+  toast.error("Deploy failed ❌");
 }
 }
+const deploynet = async () => {
+  try {
+    if (!currentProject) return;
 
-const deploynet = async() => {
-  try{
-    if(!currentProject)return;
     setDeployStatus("Deploying...");
-    const res = await fetch("http://localhost:5001/api/deploy/netlify/"+currentProject.id,{
-      method: "POST",
-      credentials: "include",
-    });
+
+    const res = await fetch(
+      "http://localhost:5001/api/deploy/netlify/" + currentProject.id,
+      {
+        method: "POST",
+        credentials: "include",
+      }
+    );
 
     const data = await res.json();
-    if(data.url){
+
+    if (data.url) {
       setDeployStatus("Success");
-      const url = data.url;
-      console.log(url);
-      navigator.clipboard.writeText(url);
-      window.open(url,"_blank");
+      toast.success("Netlify Deploy 🚀");
+
+      await loadDeploys(); // 🔥 important
+
+      navigator.clipboard.writeText(data.url);
+      window.open(data.url, "_blank");
+    } else {
+      setDeployStatus("Failed");
     }
-    else{
-      setDeployStatus("Failed")
-    }
-  }catch(err){
+  } catch (err) {
     setDeployStatus("Error");
+    toast.error("Deploy failed ❌");
   }
-}
+};
 
 const loadDeploys = async () => {
   if (!currentProject) return;

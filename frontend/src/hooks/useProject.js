@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useFiles } from "../context/FileContext";
 
 export const useProject = () => {
-
   const [Projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const {files,setFiles,runFiles,setRunFiles,currentProject,setCurrentProject,unsaved,setUnsaved} = useFiles();
@@ -10,7 +9,6 @@ export const useProject = () => {
 
   const handleGenerate = async (prompt) => {
     if (!prompt.trim()) return;
-
     setLoading(true);
     try {
       const res = await fetch("http://localhost:5001/api/generate", {
@@ -114,7 +112,8 @@ export const useProject = () => {
       credentials: "include"
     }
   );
-  getProjects();
+   await getProjects();
+   setProjects(prev => prev.filter(p => p._id !== id));
   if (
     currentProject &&
     currentProject.id === id

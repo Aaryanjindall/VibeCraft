@@ -3,27 +3,26 @@ import Publiccard from "./Publiccard"
 import { useProject } from "../hooks/useProject"
 import { useNavigate } from "react-router-dom"
 
+const PublicProjectGrid = ({ projects }) => {
+  const { loadProject } = useProject();
 
-const PublicProjectGrid = ({Publicprojects}) => {
-    const {loadProject} = useProject();
-    const navigate = useNavigate();
-    const handleOpen = async(id) => {
-        await loadProject(id);
-        window.open(`/viewer/${id}`, "_blank");
-    }
-    return(
-        <>
-        {
-            Array.isArray(Publicprojects) && Publicprojects.map((p) => (
-                <Publiccard
-                    key={p._id}
-                    pproject={p}
-                    onOpen={handleOpen}
-                />
-            ))
-        }
-        </>
-    )
-}
+  const handleOpen = async (id) => {
+    await loadProject(id);
+    window.open(`/viewer/${id}`, "_blank");
+  };
+
+  return (
+    <div className="grid grid-cols-3 gap-5">
+      {Array.isArray(projects) &&
+        projects.map((p) => (
+          <Publiccard
+            key={p._id}
+            project={p}
+            onOpen={handleOpen}
+          />
+        ))}
+    </div>
+  );
+};
 
 export default PublicProjectGrid

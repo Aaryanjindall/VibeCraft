@@ -6,7 +6,7 @@ import Landing from './pages/Landing'
 import ProtectedRoute from './utils/ProtectedRoute';
 import ErrorPage from './pages/ErrorPage';
 import Builder from './pages/r';
-import CommunityPage from './pages/CommunityPage';
+// import CommunityPage from './pages/CommunityPage';
 import MyProject from './pages/MyProjects';
 import MyCommunity from './pages/MyCommunity';
 import CommunityExplore from './pages/CommunityExplore';
@@ -14,6 +14,7 @@ import AuthPage from './pages/Auth';
 import VibeLayout from './pages/VibeLayout';
 import Explore from './pages/Explore';
 import { Viewerpage } from './pages/ViewerPage';
+import AdminPage from './pages/AdminPortal';
 function App() {
   return (
     <Router>
@@ -33,105 +34,10 @@ function App() {
     </Route>
     <Route path="*" element={<ErrorPage />} />
     <Route path="/viewer/:id" element={<Viewerpage/>}/>
+    <Route path="/admin" element={<AdminPage/>}/>
   </Routes>
 </Router>
-        // {/* PROTECTED */}
-        // {/* <Route
-        //   path="/app"
-        //   element={
-        //     <ProtectedRoute>
-        //        {/* <Vibe /> */}
-        //       <Builder/>
-        //     // </ProtectedRoute>
-        //   }
-        // />
-
-        // <Route
-        //   path="/projects"
-        //   element={
-        //     <ProtectedRoute>
-        //       <MyProject/>
-        //     </ProtectedRoute>
-        //   }
-        // />
-        // <Route
-        //   path="/Mycommunity"
-        //   element={
-        //     <ProtectedRoute>
-        //       <MyCommunity/>
-        //     </ProtectedRoute>
-        //   }
-        // />
-        // <Route 
-        // path="/community/explore/*"
-        // element={
-        //   <CommunityExplore/>
-        // } */}
-      //   />
-      //   <Route
-      //     path="/community"
-      //     element={
-      //       <ProtectedRoute>
-      //         <CommunityPage/>
-      //       </ProtectedRoute>
-      //     }
-      //   />
-      //   <Route
-      //     path="/community/search"
-      //     element={
-      //       <ProtectedRoute>
-      //         <CommunitySearch />
-      //       </ProtectedRoute>
-      //     }
-      //   />
-      //   <Route
-      //     path="/community/new"
-      //     element={
-      //       <ProtectedRoute>
-      //         <CreatePost />
-      //       </ProtectedRoute>
-      //     }
-      //   />
-      //   <Route
-      //     path="/community/chat/:projectId"
-      //     element={
-      //       <ProtectedRoute>
-      //         <CommunityChat />
-      //       </ProtectedRoute>
-      //     }
-      //   />
-
-      //   <Route
-      //     path="/mock/:id"
-      //     element={
-      //       <ProtectedRoute>
-      //         <MockPreview />
-      //       </ProtectedRoute>
-      //     }
-      //   />
-
-      //   <Route
-      //     path="/admin"
-      //     element={
-      //       // <ProtectedRoute>
-      //         <AdminPortal />
-      //       // </ProtectedRoute>
-      //     }
-      //   />
-      //   <Route
-      //     path="/dashboard"
-      //     element={
-      //       <ProtectedRoute>
-      //         <Dashboard />
-      //       </ProtectedRoute>
-      //     }
-      //   />
-      //   {/* optional public */}
-      //   <Route
-      //     path="/community/post/:postId"
-      //     element={<PostDetail />}
-      //   />
-      // </Routes>
+        
     
   )
 }

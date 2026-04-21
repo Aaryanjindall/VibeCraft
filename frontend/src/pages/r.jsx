@@ -24,9 +24,21 @@ const Builder = () => {
   } = useFiles()
 
   const navigate = useNavigate()
-  const { handleGenerate,loadProject } = useProject()
+  const { handleGenerate,loadProject,loading } = useProject()
   const{projectId} = useParams();
-  useEffect(() => { const lastId = localStorage.getItem("lastProjectId"); if (projectId) { loadProject(projectId); localStorage.setItem("lastProjectId", projectId); } else if (lastId && lastId !== "undefined") { loadProject(lastId); } },[projectId]);
+  
+  useEffect(() => {
+  const lastId = localStorage.getItem("lastProjectId");
+
+  if (projectId) {
+    loadProject(projectId);
+    localStorage.setItem("lastProjectId", projectId);
+  } 
+  else if (!currentProject && lastId && lastId !== "undefined") {
+    loadProject(lastId);
+  }
+
+}, [projectId]);
   
   
   useEffect(()=>{
@@ -47,13 +59,15 @@ const Builder = () => {
         handleKey
       );
   
-  },[files,currentProject]);
+  },[files,currentProject,prompt]);
 
   return (
     <div className="h-screen flex flex-col bg-[#0b1120] text-white">
 
       {/* 🔥 NAVBAR */}
-      <Navbar />
+      <Navbar 
+        prompt={prompt}
+      />
 
       {/* 🔥 MAIN CONTENT */}
       <div className="flex flex-1 overflow-hidden">
@@ -74,7 +88,7 @@ const Builder = () => {
                 onClick={() => handleGenerate(prompt)}
                 className="bg-indigo-500 hover:bg-indigo-600 text-sm px-3 py-1 rounded-lg"
               >
-                Generate
+                {loading ? "Generating" : "Generate"};
               </button>
             </div>
           </div>

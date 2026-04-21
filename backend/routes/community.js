@@ -3,7 +3,7 @@ const { requireAuth, loadCommunity } = require("../middleware/auth");
 const { default: mongoose } = require("mongoose");
 const Community = require("../models/Community");
 const Project = require("../models/Project");
-const { canAddProject, canRemoveMember, canDeleteCommunity, canEditProject } = require("../utils/permissions");
+const { canAddProject, canRemoveMember, canDeleteCommunity, canEditProject, canRemoveProject } = require("../utils/permissions");
 const router = express.Router();
 
 console.log("community routes m aagya");
@@ -113,11 +113,11 @@ router.post("/:id/add-project", requireAuth,loadCommunity, async (req, res) => {
       return res.status(403).json({message: "Not Allowed"});
     }
 
-    if (project.community) {
-      return res.json({
-        message: "Project already belongs to a community",
-      });
-    }
+   if (project.community) {
+  return res.status(400).json({
+    message: "Project already belongs to a community",
+  });
+}
     console.log(projectId);
     project.community = community._id;
     await project.save();
@@ -322,5 +322,44 @@ router.post("/:id/fork/:projectId",requireAuth,loadCommunity,async(req,res)=> {
     res.status(500).json({message: "Server error "});
   }
 })
+
+
+
+
+router.post("/:id/remove-project", requireAuth, loadCommunity, async (req, res) => {
+  try {
+    const { projectId } = req.body;
+    const community = req.community;
+    console.log("yhan par huu bd");
+
+    // 🔥 permission check
+    if (!canRemoveProject(req.user._id, community)) {
+      return res.status(403).json({ message: "Not allowed" });
+    }
+
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    // 🔥 unlink project
+    project.community = null;
+    await project.save();
+
+    // 🔥 remove from community.projects
+    community.projects = community.projects.filter(
+      (p) => p.toString() !== projectId.toString()
+    );
+
+    await community.save();
+
+    res.json({ message: "Project removed from community" });
+
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+    console.log(err);
+  }
+});
 
 module.exports = router;

@@ -65,3 +65,7 @@ export function canEditProject(userId,community){
 }
 
 
+export function canRemoveProject(userId, community) {
+  const role = getUserRole(userId, community);
+  return role === "owner";
+}

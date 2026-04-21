@@ -2,9 +2,8 @@ import { useUser } from "../context/UserProvider";
 import { useCommunity } from "../hooks/useCommunity";
 import { CommunityCard } from "./CommunityCard";
 
-const CommunityGrid = ({ communities, type, joinCommunity, onOpen }) => {
+const CommunityGrid = ({ communities, type, joinCommunity, onOpen,deleteCommunity }) => {
   const { user } = useUser();
-const {deleteCommunity} = useCommunity();
 
   // 🛑 safety check
   if (!user) return null;

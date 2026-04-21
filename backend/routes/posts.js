@@ -1,92 +1,93 @@
-const express = require('express');
+// routes/post.js
+const express = require("express");
 const router = express.Router();
-const Post = require('../models/Post');
-const { requireAuth } = require('../middleware/auth');
+const Post = require("../models/Post");
+const { requireAuth } = require("../middleware/auth");
+const Community = require("../models/Community");
 
-// GET all posts
-router.get('/', async (req, res) => {
-  try {
-    const posts = await Post.find()
-                            .populate('author', 'username email')
-                            .sort({ createdAt: -1 });
-    res.json(posts);
-  } catch (err) {
-    console.error('Error fetching posts:', err);
-    res.status(500).json({ error: 'Server error fetching posts' });
-  }
-});
-
-// POST a new post
-router.post('/', requireAuth, async (req, res) => {
+// 🔥 CREATE POST
+router.post("/create/:communityId", requireAuth, async (req, res) => {
   try {
     const { title, content } = req.body;
-    if (!title || !content) {
-      return res.status(400).json({ error: 'Title and content are required' });
-    }
-    
+    const { communityId } = req.params;
+
     const post = new Post({
-      title,
-      content,
-      author: req.session.userId
-    });
-    
-    await post.save();
-    
-    const populatedPost = await Post.findById(post._id).populate('author', 'username email');
-    res.status(201).json(populatedPost);
-  } catch (err) {
-    console.error('Error creating post:', err);
-    res.status(500).json({ error: 'Server error creating post' });
-  }
+  title,
+  content,
+  author: req.user._id,
+  community: communityId,
 });
 
-// GET a single post by ID
-router.get('/:postId', async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.postId)
-                           .populate('author', 'username email')
-                           .populate('comments.author', 'username email');
+    await post.save();
 
-    if (!post) {
-      return res.status(404).json({ error: 'Post not found' });
-    }
     res.json(post);
   } catch (err) {
-    console.error('Error fetching single post:', err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ message: "Error" });
   }
 });
 
-// POST a new comment on a post
-router.post('/:postId/comments', requireAuth, async (req, res) => {
+// 🔥 GET POSTS (community wise)
+router.get("/:communityId", requireAuth, async (req, res) => {
   try {
-    const { text } = req.body;
-    if (!text) {
-      return res.status(400).json({ error: 'Comment text is required' });
-    }
+    const posts = await Post.find({
+      community: req.params.communityId,
+    })
+      .populate("author", "username avatar")
+      .populate({
+        path: "comments.user",
+        select: "username avatar",
+      })
+      .sort({ createdAt: -1 });
 
-    const post = await Post.findById(req.params.postId);
-    if (!post) {
-      return res.status(404).json({ error: 'Post not found' });
-    }
-    
-    const newComment = {
-      text,
-      author: req.session.userId
-    };
-    
-    post.comments.push(newComment);
-    await post.save();
-
-    const populatedPost = await Post.findById(req.params.postId)
-                                    .populate('author', 'username email')
-                                    .populate('comments.author', 'username email');
-
-    res.status(201).json(populatedPost);
+    res.json(posts || []);
   } catch (err) {
-    console.error('Error adding comment:', err);
-    res.status(500).json({ error: 'Server error adding comment' });
+    console.log("ERROR:", err);
+    res.status(500).json({ error: err.message });
   }
+});
+
+// 🔥 LIKE
+router.post("/like/:postId", requireAuth, async (req, res) => {
+  const post = await Post.findById(req.params.postId);
+
+  const alreadyLiked = post.likes.some(
+  (id) => id.toString() === req.user._id.toString()
+);
+  if (alreadyLiked) {
+    post.likes = post.likes.filter(
+      (id) => id.toString() !== req.user._id.toString()
+    );
+  } else {
+    post.likes.push(req.user._id);
+  }
+
+  await post.save();
+if (!post) {
+  return res.status(404).json({ message: "Post not found" });
+}
+  res.json(post);
+  
+});
+
+
+
+// 🔥 COMMENT
+router.post("/comment/:postId", requireAuth, async (req, res) => {
+  const { text } = req.body;
+
+  const post = await Post.findById(req.params.postId);
+
+  post.comments.push({
+    user: req.user._id,
+    text,
+  });
+
+  await post.save();
+if (!post) {
+  return res.status(404).json({ message: "Post not found" });
+}
+  res.json(post);
+  
 });
 
 module.exports = router;

@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useFiles } from "../context/FileContext";
 
 
-const ProjectsGrid = ({ projects,onSelect,onOpen }) => {
-  const { loadProject,deleteProject } = useProject();
+const ProjectsGrid = ({ projects,onSelect,deleteProject,onOpen }) => {
+  const { loadProject } = useProject();
   const navigate = useNavigate();
 
   const handleOpen = async (id) => {

@@ -1,10 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { useFiles } from "../context/FileContext";
 import { downloadProject, runProjectInNewTab } from "../utils/fileUtils";
 import UserProfile from "./userProfle";
+import { useDeploy } from "../hooks/useDeploy";
 
 
-const Navbar = () => {
+const Navbar = ({prompt}) => {
+  const navigate = useNavigate();
     const {files,setRunFiles,runFiles,handleSave,setunsaved,setCurrentProject,setFiles} = useFiles();
+    const {deploy} = useDeploy();
     return(
         <div className="h-[60px] bg-[#020617] border-b border-[#1e293b] flex items-center justify-between px-4">
 
@@ -17,15 +21,16 @@ const Navbar = () => {
       <div className="flex gap-2">
         <button className="btn" onClick={()=>setRunFiles(files)}>▶ Run</button>
         <button className="btn" onClick={() => downloadProject(runFiles)}>⬇</button>
-        <button className="btn">🚀</button>
+        <button className="btn" onClick={()=> deploy()}>🚀</button>
         <button className="btn" onClick={() => runProjectInNewTab(runFiles)}>🔗</button>
-        <button className="btn" onClick={handleSave}>💾</button>
+        <button className="btn" onClick={()=>handleSave(prompt)}>💾</button>
         <button onClick={() => {
   setFiles({});
   setRunFiles({});
   setCurrentProject(null);
   setunsaved(false);
   localStorage.removeItem("lastProjectId");
+  navigate("/app");
 }}>Clear
 </button>
       </div>

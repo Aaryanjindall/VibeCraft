@@ -3,10 +3,10 @@ const router = express.Router();
 const User = require('../models/User');
 const Post = require('../models/Post');
 const Community = require('../models/Community');
-const { requireAdmin } = require('../middleware/auth');
+const { requireAdmin, requireAuth } = require('../middleware/auth');
+const Project = require('../models/Project');
 require('dotenv').config();
 
-// Hardcoded admin credentials (override via env if needed)
 const ADMIN_CREDENTIALS = {
   email: process.env.ADMIN_EMAIL || 'admin@aivibe.com',
   password: process.env.ADMIN_PASSWORD || 'admin123',
@@ -34,90 +34,89 @@ router.post('/login', (req, res) => {
   });
 });
 
-// Admin overview endpoint
-router.get('/overview', requireAdmin, async (req, res) => {
+router.get("/dashboard", requireAdmin, async (req, res) => {
   try {
-    const [userCount, postCount, communityCount, latestPosts, communityStats] = await Promise.all([
-      User.countDocuments(),
-      Post.countDocuments(),
-      Community.countDocuments(),
-      Post.find().sort({ createdAt: -1 }).limit(5).populate('author', 'username email'),
-      User.aggregate([
-        { $project: { joinedCount: { $size: { $ifNull: ['$joinedCommunities', []] } } } },
-        { $group: { _id: null, totalJoined: { $sum: '$joinedCount' }, avgPerUser: { $avg: '$joinedCount' } } }
-      ])
-    ]);
+    const users = await User.countDocuments();
+    const projects = await Project.countDocuments();
+    const communities = await Community.countDocuments();
+    const posts = await Post.countDocuments();
 
-    const communitiesWithMembers = await Community.find()
-      .populate('members', 'username email')
-      .select('projectId projectName members')
-      .limit(10);
-
-    res.json({
-      userCount,
-      postCount,
-      communityCount,
-      latestPosts,
-      communityStats: {
-        totalMemberships: communityStats[0]?.totalJoined || 0,
-        avgCommunitiesPerUser: Math.round(communityStats[0]?.avgPerUser || 0),
-        communitiesWithMembers: communitiesWithMembers.map(c => ({
-          projectId: c.projectId,
-          projectName: c.projectName,
-          memberCount: c.members.length
-        }))
-      }
-    });
+    res.json({ users, projects, communities, posts });
   } catch (err) {
-    console.error('Error building admin overview:', err);
-    res.status(500).json({ error: 'Failed to load admin overview' });
+    console.log(err);
+    res.status(500).json({ error: "Dashboard error" });
   }
 });
 
-// Admin - manage users
-router.get('/users', requireAdmin, async (req, res) => {
+
+// get all users
+router.get("/users", requireAdmin, async (req, res) => {
   try {
-    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    const users = await User.find().select("-password");
     res.json(users);
   } catch (err) {
-    console.error('Error fetching users for admin:', err);
-    res.status(500).json({ error: 'Failed to load users' });
+    res.status(500).json({ error: "Users error" });
   }
 });
 
-router.delete('/users/:userId', requireAdmin, async (req, res) => {
+router.get("/user/:id", requireAdmin, async (req, res) => {
   try {
-    const { userId } = req.params;
-    await User.findByIdAndDelete(userId);
-    await Post.deleteMany({ author: userId });
-    res.json({ message: 'User and related posts deleted' });
+    const userId = req.params.id;
+
+    // 🔥 SOLO PROJECTS
+    const soloProjects = await Project.find({
+      owner: userId,
+      community: null,
+    });
+
+    // 🔥 COMMUNITIES (user member hai)
+    const communities = await Community.find({
+      "members.user": userId,
+    }).populate("projects");
+
+    // 🔥 POSTS
+    const posts = await Post.find({
+      author: userId,
+    }).populate("community", "name");
+
+    res.json({
+      soloProjects,
+      communities,
+      posts,
+    });
+
   } catch (err) {
-    console.error('Error deleting user:', err);
-    res.status(500).json({ error: 'Failed to delete user' });
+    console.log(err);
+    res.status(500).json({ error: "User detail error" });
+  }
+});
+// delete user
+router.delete("/user/:id", requireAdmin, async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: "User deleted" });
+  } catch (err) {
+    res.status(500).json({ error: "Delete user error" });
   }
 });
 
-// Admin - manage posts
-router.get('/posts', requireAdmin, async (req, res) => {
+// delete project
+router.delete("/project/:id", requireAdmin, async (req, res) => {
   try {
-    const posts = await Post.find()
-      .populate('author', 'username email')
-      .sort({ createdAt: -1 });
-    res.json(posts);
+    await Project.findByIdAndDelete(req.params.id);
+    res.json({ message: "Project deleted" });
   } catch (err) {
-    console.error('Error fetching posts for admin:', err);
-    res.status(500).json({ error: 'Failed to load posts' });
+    res.status(500).json({ error: "Delete project error" });
   }
 });
 
-router.delete('/posts/:postId', requireAdmin, async (req, res) => {
+// delete community
+router.delete("/community/:id", requireAdmin, async (req, res) => {
   try {
-    const { postId } = req.params;
-    await Post.findByIdAndDelete(postId);
-    res.json({ message: 'Post deleted' });
+    await Community.findByIdAndDelete(req.params.id);
+    res.json({ message: "Community deleted" });
   } catch (err) {
-    console.error('Error deleting post:', err);
-    res.status(500).json({ error: 'Failed to delete post' });
+    res.status(500).json({ error: "Delete community error" });
   }
 });
 

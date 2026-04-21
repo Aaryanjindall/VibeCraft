@@ -12,10 +12,6 @@ const userSchema = new mongoose.Schema({
 
   avatar: { type: String }, // 🔥 Google DP ya custom DP
 
-  joinedCommunities: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Community'
-  }]
 }, { timestamps: true });
 
 

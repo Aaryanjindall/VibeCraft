@@ -56,67 +56,88 @@ setActiveFile(fileKeys.length > 0 ? fileKeys[0] : "");
   }
 };
 
-    return(
-        <div className="h-screen flex bg-[#0f172a] text-white">
+    return (
+  <div className="h-screen flex bg-[#020617] text-white">
 
-      {/* 🔥 FILES */}
-      <div className="w-[220px] bg-[#020617] border-r border-[#334155] p-3">
-        <h3 className="mb-3">📂 Files</h3>
+    {/* 🔥 FILE SIDEBAR */}
+    <div className="w-[220px] bg-[#020617] border-r border-[#1e293b] flex flex-col">
 
+      <div className="h-[50px] flex items-center px-4 border-b border-[#1e293b] text-sm font-semibold">
+        📂 Files
+      </div>
+
+      <div className="flex-1 overflow-auto p-2">
         {Object.keys(files).map((file) => (
           <div
             key={file}
             onClick={() => setActiveFile(file)}
-            className={`p-2 rounded cursor-pointer 
-            ${activeFile === file ? "bg-[#1e293b]" : ""}`}
+            className={`px-3 py-2 rounded-md text-sm cursor-pointer transition
+            ${
+              activeFile === file
+                ? "bg-indigo-500 text-white"
+                : "hover:bg-[#1e293b] text-gray-300"
+            }`}
           >
             {file}
           </div>
         ))}
       </div>
-
-      {/* 🔥 CODE */}
-      <div className="flex-1 flex flex-col">
-
-        {/* HEADER */}
-        <div className="p-3 border-b border-[#334155] flex justify-between">
-          <h2>{activeFile}</h2>
-
-          <button
-            onClick={()=>handleForkClick(id)}
-            className="bg-indigo-500 px-4 py-1 rounded"
-          >
-            Fork
-          </button>
-        </div>
-
-        {/* CODE VIEW */}
-        <textarea
-          value={files[activeFile] || ""}
-          readOnly
-          className="flex-1 bg-[#020617] p-4 outline-none"
-        />
-      </div>
-
-      {/* 🔥 PREVIEW */}
-      <div className="w-[40%] border-l border-[#334155] bg-black">
-        <iframe
-          title="preview"
-          srcDoc={`
-            ${files["index.html"] || ""}
-            <style>${files["styles.css"] || ""}</style>
-            <script>${files["script.js"] || ""}<\/script>
-          `}
-          className="w-full h-full"
-        />
-      </div>
-      {showAuth && (
-  <AuthModal
-    onClose={() => setShowAuth(false)}
-    onSuccess={handleAuthSuccess}
-  />
-)}
-
     </div>
-    )
+
+    {/* 🔥 CODE SECTION */}
+    <div className="flex-1 flex flex-col">
+
+      {/* 🔹 HEADER */}
+      <div className="h-[50px] flex items-center justify-between px-4 border-b border-[#1e293b] bg-[#020617]">
+
+        <h2 className="text-sm text-gray-300">
+          {activeFile || "No file selected"}
+        </h2>
+
+        <button
+          onClick={() => handleForkClick(id)}
+          className="bg-indigo-500 hover:bg-indigo-600 transition px-4 py-1.5 rounded-md text-sm"
+        >
+          Fork
+        </button>
+      </div>
+
+      {/* 🔹 CODE VIEW */}
+      <div className="flex-1 bg-[#020617] p-4 overflow-auto">
+
+        <pre className="text-sm text-gray-300 whitespace-pre-wrap">
+          <code>{files[activeFile] || "// No file selected"}</code>
+        </pre>
+
+      </div>
+    </div>
+
+    {/* 🔥 PREVIEW PANEL */}
+    <div className="w-[40%] border-l border-[#1e293b] flex flex-col bg-black">
+
+      <div className="h-[50px] flex items-center px-4 border-b border-[#1e293b] text-sm text-gray-400">
+        🌐 Preview
+      </div>
+
+      <iframe
+        title="preview"
+        srcDoc={`
+          ${files["index.html"] || ""}
+          <style>${files["styles.css"] || ""}</style>
+          <script>${files["script.js"] || ""}<\/script>
+        `}
+        className="flex-1 w-full"
+      />
+    </div>
+
+    {/* 🔥 AUTH MODAL */}
+    {showAuth && (
+      <AuthModal
+        onClose={() => setShowAuth(false)}
+        onSuccess={handleAuthSuccess}
+      />
+    )}
+
+  </div>
+);
 }

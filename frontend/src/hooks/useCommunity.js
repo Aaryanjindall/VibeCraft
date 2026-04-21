@@ -278,11 +278,43 @@ const deleteCommunity = async (communityId) => {
       throw new Error(data.message || "Failed to delete community");
     }
     await loadCommunities();
+    setCommunities(prev => prev.filter(c => c._id !== communityId));
     return data;
     toast.success("Community Deleted")
   } catch (err) {
     toast.error("Delete Community Error:", err.message);
     throw err;
+  }
+
+
+  
+
+};
+const removeProject = async (communityId, projectId) => {
+  try {
+    const res = await fetch(
+      `http://localhost:5001/api/community/${communityId}/remove-project`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ projectId }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message);
+    setcommunityProjects(prev =>
+      prev.filter(p => p._id !== projectId)
+    );
+
+    toast.success("Project removed ");
+
+  } catch (err) {
+    toast.error(err.message);
   }
 };
 
@@ -297,6 +329,7 @@ const deleteCommunity = async (communityId) => {
     getCommunityMembers,
     communitymembers,exploreCommunities, setExploreCommunities,
     exploreCommunitiesFn,addProjectToCommunity,
+    removeProject,
     deleteCommunity,
     assignRole,removeMember,saveProject,forkCommunityProject,
   }

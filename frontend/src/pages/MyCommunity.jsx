@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CommunityGrid from "../components/CommunityGrid";
 import Navbar from "../components/Navbar";
 import CommunityExplore from "./CommunityExplore";
+import UserProfile from "../components/userProfle";
 
 const MyCommunity = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const MyCommunity = () => {
     joinCommunity,
     createCommunity,
     exploreCommunities, setExploreCommunities,
-    exploreCommunitiesFn
+    exploreCommunitiesFn,deleteCommunity
   } = useCommunity();
 
   const [activeTab, setActiveTab] = useState("My Communities");
@@ -55,7 +56,7 @@ useEffect(() => {
     <div className="h-screen bg-gradient-to-br from-[#0f172a] to-[#020617] text-white flex flex-col">
 
       {/* 🔥 NAVBAR */}
-      <Navbar />
+      <UserProfile/>
 
       <div className="flex flex-1 min-h-0">
 
@@ -101,6 +102,7 @@ useEffect(() => {
             type={activeTab}
             joinCommunity={joinCommunity}
             onOpen={handleOpen}
+            deleteCommunity={deleteCommunity}
           />
 
         </div>
