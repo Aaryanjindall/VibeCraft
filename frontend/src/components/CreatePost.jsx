@@ -1,28 +1,26 @@
 // components/CreatePost.jsx
 import { useState } from "react";
-import { usePost } from "../hooks/usePost";
 
-const CreatePost = ({ communityId }) => {
+const CreatePost = ({ communityId, createPost }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const { createPost } = usePost();
 
   return (
     <div>
-      <h3 className="mb-3 font-semibold">Create Post</h3>
+      <h3 className="text-sm font-semibold uppercase tracking-wider text-[#888] border-b border-[#2d2d2d] pb-2 mb-4">Create Post</h3>
 
       <input
-        placeholder="Title..."
+        placeholder="Post Title..."
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full p-2 mb-2 bg-[#1e293b] rounded"
+        className="input-ide w-full mb-3"
       />
 
       <textarea
-        placeholder="Description..."
+        placeholder="What's on your mind? Discuss code, ask questions..."
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="w-full p-2 bg-[#1e293b] rounded"
+        className="input-ide w-full resize-none min-h-[100px]"
       />
 
       <button
@@ -31,9 +29,9 @@ const CreatePost = ({ communityId }) => {
           setTitle("");
           setContent("");
         }}
-        className="w-full mt-2 bg-indigo-500 py-1 rounded"
+        className="btn-ide btn-ide-primary w-full mt-3"
       >
-        Post
+        Publish Post
       </button>
     </div>
   );

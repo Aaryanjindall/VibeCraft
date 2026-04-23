@@ -11,7 +11,7 @@ const Editorr = ({ files, activeFile, setFiles }) => {
 
   };
 
-  console.log(files);
+
 
 
   const getLanguage = (filename) => {

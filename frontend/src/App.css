@@ -1,10 +1,35 @@
-/* App.css */
 @import "tailwindcss";
+
+:root {
+  --color-bg-base: #111111;
+  --color-bg-panel: #1a1a1a;
+  --color-bg-panel-hover: #222222;
+  --color-border: #2d2d2d;
+  --color-accent: #e53e3e;
+  --color-accent-hover: #c53030;
+  --color-text-main: #f0f0f0;
+  --color-text-muted: #888888;
+  
+  --font-heading: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', Courier, monospace;
+  
+  --radius-panel: 12px;
+  --radius-button: 6px;
+}
+
 html, body, #root {
   margin: 0;
   padding: 0;
-  height: 100%;
-  width: 100%;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
 }
 
 .App {
@@ -13,25 +38,108 @@ html, body, #root {
   overflow: hidden;
 }
 
-.btn {
-  background: #1e293b;
-  padding: 6px 10px;
-  border-radius: 8px;
-  transition: 0.2s;
+/* IDE Panel Styles */
+.ide-panel {
+  background-color: var(--color-bg-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  overflow: hidden;
 }
 
-.btn:hover {
-  background: #334155;
+.ide-header {
+  padding: 10px 16px;
+  background-color: #1a1a1a;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.input {
-  @apply w-full p-3 rounded-lg bg-[#020617] border border-gray-700 focus:border-cyan-400 outline-none transition;
+/* Buttons */
+.btn-ide {
+  padding: 6px 14px;
+  border-radius: var(--radius-button);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-.btn-main {
-  @apply w-full py-3 rounded-lg bg-gradient-to-r from-cyan-400 to-purple-500 text-black font-semibold hover:scale-105 transition;
+.btn-ide-primary {
+  background-color: var(--color-accent);
+  color: white;
 }
 
-.btn-google {
-  @apply w-full py-2 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition;
+.btn-ide-primary:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.btn-ide-secondary {
+  background-color: #2a2a2a;
+  color: var(--color-text-main);
+  border-color: #3d3d3d;
+}
+
+.btn-ide-secondary:hover {
+  background-color: #333333;
+}
+
+.btn-ide-ghost {
+  background-color: transparent;
+  color: var(--color-text-muted);
+}
+
+.btn-ide-ghost:hover {
+  background-color: #2a2a2a;
+  color: var(--color-text-main);
+}
+
+/* Inputs */
+.input-ide {
+  background-color: #0d0d0d;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  color: var(--color-text-main);
+  padding: 8px 12px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-ide:focus {
+  border-color: #444;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+/* Utilities */
+.text-mono {
+  font-family: var(--font-mono);
 }

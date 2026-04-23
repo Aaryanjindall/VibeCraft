@@ -9,9 +9,9 @@ const crypto = require("crypto");
 router.post('/save',requireAuth, async (req, res) => {
   try {
     console.log("yhan tak aagya");
-    const { name, files } = req.body;
+    const { name, files, isPublic } = req.body;
     const userId = req.user._id ;
-    console.log(userId);
+    // console.log(userId);
     if (!userId) {
       return res.status(401).json({
         error: "Not logged in",
@@ -32,7 +32,7 @@ router.post('/save',requireAuth, async (req, res) => {
       owner: userId,
       files,
       members: [userId],
-      isPublic: true
+      isPublic: isPublic
     });
     await project.save();
     console.log("saved");
@@ -50,7 +50,7 @@ router.post('/save',requireAuth, async (req, res) => {
 router.put("/update/:id",requireAuth,async(req,res)=> {
   try{
     console.log("yhan aage oye");
-    const { name , files} = req.body;
+    const { name , files , isPublic} = req.body;
     console.log(req.user._id)
     const project = await Project.findByIdAndUpdate(
       {_id: req.params.id,
@@ -59,10 +59,12 @@ router.put("/update/:id",requireAuth,async(req,res)=> {
       {
         name,
         files,
+        isPublic
       },
       {new : true}
     );
     console.log("updated");
+    console.log(isPublic);
     res.json(project);
   }
   catch(err){

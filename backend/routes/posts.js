@@ -73,21 +73,24 @@ if (!post) {
 
 // 🔥 COMMENT
 router.post("/comment/:postId", requireAuth, async (req, res) => {
-  const { text } = req.body;
+  try {
+    const { text } = req.body;
+    const post = await Post.findById(req.params.postId);
 
-  const post = await Post.findById(req.params.postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-  post.comments.push({
-    user: req.user._id,
-    text,
-  });
+    post.comments.push({
+      user: req.user._id,
+      text,
+    });
 
-  await post.save();
-if (!post) {
-  return res.status(404).json({ message: "Post not found" });
-}
-  res.json(post);
-  
+    await post.save();
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to post comment" });
+  }
 });
 
 module.exports = router;

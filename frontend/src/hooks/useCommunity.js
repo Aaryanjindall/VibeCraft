@@ -158,6 +158,9 @@ const addProjectToCommunity = async (projectId, communityId) => {
 
 const removeMember = async (targetUserId, communityId) => {
   try {
+    // 🔥 Optimistic Update
+    setcommunitymembers(prev => prev.filter(m => m.user._id !== targetUserId));
+
     const res = await fetch(
       `http://localhost:5001/api/community/${communityId}/remove`,
       {
@@ -170,8 +173,8 @@ const removeMember = async (targetUserId, communityId) => {
       }
     );
     const data = await res.json();
-    getCommunityMembers(communityId);
     if (!res.ok) {
+      getCommunityMembers(communityId); // rollback on fail
       throw new Error(data.message || "Failed to remove member");
     }
     toast.success("Member SuccessFully Removed");
@@ -201,8 +204,8 @@ const saveProject = async (communityId, projectId, files) => {
     if (!res.ok) {
       throw new Error(data.message || "Failed to save project");
     }
+    toast.success("Successfully Contributed");
     return data;
-    toast.success("SucessFully Contributed");
   } catch (err) {
     toast.error("Save Project Error:", err.message);
     throw err;
@@ -222,8 +225,8 @@ const forkCommunityProject = async (communityId, projectId) => {
     if (!res.ok) {
       throw new Error(data.message || "Failed to fork project");
     }
+    toast.success("Successfully Forked");
     return data;
-    toast.success("SuccessFully Forked");
   } catch (err) {
     toast.error("Fork Error:", err.message);
     throw err;
@@ -232,8 +235,11 @@ const forkCommunityProject = async (communityId, projectId) => {
 
 const assignRole = async (communityId, targetUserId, newRole) => {
   try {
-    console.log("yhan se toh jara h ");
-    console.log(`http://localhost:5001/api/community/${communityId}/assign-role`);
+    // 🔥 Optimistic Update
+    setcommunitymembers(prev => prev.map(m => 
+      m.user._id === targetUserId ? { ...m, role: newRole } : m
+    ));
+
     const res = await fetch(
       `http://localhost:5001/api/community/${communityId}/assign-role`,
       {
@@ -246,11 +252,11 @@ const assignRole = async (communityId, targetUserId, newRole) => {
         body: JSON.stringify({ targetUserId, newRole }),
       }
     );
-    console.log("yhan se toh jara h ");
 
     const data = await res.json();
 
     if (!res.ok) {
+      getCommunityMembers(communityId); // rollback on fail
       throw new Error(data.message || "Failed to assign role");
     }
     toast.success("Role SuccessFully Assigned");

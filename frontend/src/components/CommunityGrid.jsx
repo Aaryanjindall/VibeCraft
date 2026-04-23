@@ -11,7 +11,7 @@ const CommunityGrid = ({ communities, type, joinCommunity, onOpen,deleteCommunit
   // 🔥 Explore tab → simple grid
   if (type === "Explore New") {
     return (
-      <div className="grid grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {communities.map((c) => (
           <CommunityCard
             key={c._id}
@@ -19,7 +19,6 @@ const CommunityGrid = ({ communities, type, joinCommunity, onOpen,deleteCommunit
             type={type}
             joinCommunity={joinCommunity}
             onOpen={onOpen}
-           
           />
         ))}
       </div>
@@ -40,11 +39,11 @@ const CommunityGrid = ({ communities, type, joinCommunity, onOpen,deleteCommunit
 
       {/* 🔥 CREATED */}
       <div>
-        <h2 className="text-lg mb-3 font-semibold">
+        <h2 className="text-sm tracking-widest uppercase mb-4 font-semibold text-[#888] border-b border-[#2d2d2d] pb-2">
           Created by You
         </h2>
 
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {created.map((c) => (
             <CommunityCard
               key={c._id}
@@ -58,17 +57,17 @@ const CommunityGrid = ({ communities, type, joinCommunity, onOpen,deleteCommunit
         </div>
 
         {created.length === 0 && (
-          <p className="text-gray-400">No communities created</p>
+          <p className="text-[#666] text-sm mt-4">No communities created yet.</p>
         )}
       </div>
 
       {/* 🔥 JOINED */}
       <div>
-        <h2 className="text-lg mb-3 font-semibold">
-          Joined
+        <h2 className="text-sm tracking-widest uppercase mb-4 font-semibold text-[#888] border-b border-[#2d2d2d] pb-2">
+          Joined Communities
         </h2>
 
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {joined.map((c) => (
             <CommunityCard
               key={c._id}

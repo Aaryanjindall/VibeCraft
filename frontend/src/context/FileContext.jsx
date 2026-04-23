@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 const FileContext = createContext(null)
 
@@ -69,11 +70,12 @@ export const FileProvider = ({ children }) => {
   }, [files])
 
   // ✅ handle save
-  const handleSave = async (prompt) => {
+  const handleSave = async (prompt,status) => {
     try {
       if (!files || Object.keys(files).length === 0) return
 
       setSaveLoading(true)
+      console.log(status);
 
       const url = currentProject
         ? `http://localhost:5001/api/project/update/${currentProject.id}`
@@ -87,11 +89,13 @@ export const FileProvider = ({ children }) => {
         credentials: 'include',
         body: JSON.stringify({
           name: currentProject?.name || prompt,
-          files
+          files,
+          isPublic: status
         })
       })
 
       const data = await res.json()
+      toast.success("Saved SuccessFully");
       console.log("save hogya");
       if (!currentProject && data.project) {
         setCurrentProject({

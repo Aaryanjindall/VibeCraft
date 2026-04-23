@@ -21,7 +21,7 @@ export const UserProvider = ({ children }) => {
           setUser(null);
         }
       } catch (err) {
-        console.log("User check failed");
+
         setUser(null);
       } finally {
         setLoading(false);

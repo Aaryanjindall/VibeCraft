@@ -21,37 +21,84 @@ export const usePost = () => {
 };
 
   const createPost = async (communityId, body) => {
-    const res = await fetch(`http://localhost:5001/api/post/create/${communityId}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(body),
-  });
-  const data = await res.json(); 
+    // 🔥 Optimistic Update
+    const tempPost = {
+       _id: "temp_" + Date.now(),
+       title: body.title,
+       content: body.content,
+       author: { username: "You (sending...)", avatar: "" },
+       createdAt: new Date().toISOString(),
+       likes: [],
+       comments: []
+    };
+    setPosts(prev => [tempPost, ...prev]);
 
-  setPosts(prev => [data, ...prev]);
-    loadPosts(communityId);
- 
+    try {
+      const res = await fetch(`http://localhost:5001/api/post/create/${communityId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
+      const data = await res.json(); 
+      
+      // Replace temp with real data
+      setPosts(prev => prev.map(p => p._id === tempPost._id ? data : p));
+      loadPosts(communityId);
+    } catch (err) {
+      // Revert if failed
+      setPosts(prev => prev.filter(p => p._id !== tempPost._id));
+    }
   };
   const commentPost = async (postId, text, communityId) => {
-  await fetch(`http://localhost:5001/api/post/comment/${postId}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ text }),
-  });
+    try {
+      // 🔥 Optimistic Update
+      const newComment = { text, user: { username: "You", avatar: "" } };
+      setPosts(prev => prev.map(p => 
+        p._id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p
+      ));
 
-  loadPosts(communityId); // 🔥 important
-};
+      const res = await fetch(`http://localhost:5001/api/post/comment/${postId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ text }),
+      });
+
+      if (!res.ok) throw new Error("Failed to post comment");
+      
+      loadPosts(communityId); // 🔥 refresh properly after saving
+    } catch (err) {
+      toast.error(err.message);
+      loadPosts(communityId); // rollback
+    }
+  };
 
   const likePost = async (id, communityId) => {
-  await fetch(`http://localhost:5001/api/post/like/${id}`, {
-    method: "POST",
-    credentials: "include",
-  });
+    try {
+      // 🔥 Optimistic Update
+      setPosts(prev => prev.map(p => 
+        p._id === id ? { 
+          ...p, 
+          likes: p.likes?.includes("temp_id") 
+            ? p.likes.filter(l => l !== "temp_id") 
+            : [...(p.likes || []), "temp_id"] 
+        } : p
+      ));
 
-  loadPosts(communityId); // 🔥 refresh
-};
+      const res = await fetch(`http://localhost:5001/api/post/like/${id}`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error("Failed to like post");
+
+      loadPosts(communityId); // 🔥 refresh
+    } catch (err) {
+      toast.error(err.message);
+      loadPosts(communityId);
+    }
+  };
   
 
   return {
