@@ -39,7 +39,9 @@ export const CommunityProject = ({ communityId, projectId }) => {
     load();
   }, [projectId]);
 
-  const userRole = communitymembers.find(m => m.user._id.toString() === user._id.toString())?.role;
+  const userRole = user?._id 
+    ? communitymembers?.find(m => m?.user?._id?.toString() === user._id.toString())?.role 
+    : null;
 
   useEffect(() => {
     if (communityId) {
@@ -57,13 +59,13 @@ export const CommunityProject = ({ communityId, projectId }) => {
   );
 
   return (
-    <div className="flex-1 flex flex-col lg:flex-row gap-4 p-4 overflow-y-auto lg:overflow-hidden bg-[#111111] text-[#f0f0f0]">
+    <div className="flex-1 flex flex-col lg:flex-row gap-4 p-4 overflow-y-auto lg:overflow-hidden bg-[#111111] text-[#f0f0f0] h-full">
       
       {/* LEFT COLUMN: Actions & Explorer */}
-      <div className="w-full lg:w-[280px] flex flex-col gap-4 shrink-0">
+      <div className="w-full lg:w-[280px] flex flex-col gap-4 shrink-0 h-[600px] lg:h-full lg:min-h-0">
         
         {/* Actions & Members Panel */}
-        <div className="ide-panel flex flex-col flex-1 min-h-[250px]">
+        <div className="ide-panel flex flex-col flex-1 min-h-[250px] lg:min-h-0">
           <div className="ide-header justify-between bg-[#161616]">
             <div className="flex items-center gap-2">
               <Users size={14} className="text-[#a855f7]" />
@@ -101,7 +103,7 @@ export const CommunityProject = ({ communityId, projectId }) => {
         </div>
 
         {/* Project Explorer Panel */}
-        <div className="ide-panel h-[40%] min-h-[200px] flex flex-col overflow-hidden shrink-0">
+        <div className="ide-panel flex flex-col shrink-0 h-[300px] lg:h-[40%] lg:min-h-0">
           <div className="ide-header bg-[#161616] flex items-center gap-2">
             <Folder size={14} className="text-[#e53e3e]" />
             <span>Files</span>

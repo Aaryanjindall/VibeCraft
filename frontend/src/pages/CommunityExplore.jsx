@@ -7,6 +7,7 @@ import { CommunityMembers } from "../components/CommunityMembers";
 import { CommunityProject } from "../components/CommunityProject";
 import PostFeed from "../components/PostFeed";
 import CreatePost from "../components/CreatePost";
+import UserProfile from "../components/userProfle";
 import { MessageSquare, FolderGit2, Users, Layout, Trash2 } from "lucide-react";
 
 const CommunityExplore = () => {
@@ -39,6 +40,9 @@ const CommunityExplore = () => {
         <div>
           <h1 className="text-lg font-semibold leading-tight">Community Hub</h1>
           <p className="text-xs text-[#888]">Collaborate, discuss, and build together</p>
+        </div>
+        <div className="h-8 w-8 ml-auto rounded-full bg-[#222] border border-[#444] relative shrink-0">
+          <UserProfile/>
         </div>
       </div>
 
