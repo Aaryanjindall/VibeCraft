@@ -1,15 +1,32 @@
 import Editor from "@monaco-editor/react";
+import { useEffect } from "react";
 
-const Editorr = ({ files, activeFile, setFiles }) => {
+const Editorr = ({ files, activeFile, setFiles,isCollaborative = false ,onCodeChange }) => {
 
   const handleChange = (value) => {
-
-    setFiles({
+    const updated = {
       ...files,
       [activeFile]: value || "",
-    });
+    }
 
+    setFiles(updated);
+    
   };
+
+  useEffect(()=>{
+
+if(
+ !isCollaborative ||
+ !onCodeChange
+) return;
+
+const t=setTimeout(()=>{
+ onCodeChange(files);
+},400);
+
+return ()=>clearTimeout(t);
+
+},[files]);
 
 
 

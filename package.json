@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "bcrypt": "^6.0.0",
-    "connect-mongo": "^5.1.0",
-    "express-session": "^1.18.2",
-    "mongoose": "^8.18.1",
-    "react-quill": "^2.0.0"
-  }
-}

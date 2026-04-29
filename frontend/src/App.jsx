@@ -15,6 +15,9 @@ import VibeLayout from './pages/VibeLayout';
 import Explore from './pages/Explore';
 import { Viewerpage } from './pages/ViewerPage';
 import AdminPage from './pages/AdminPortal';
+import RealTime from './pages/Realtime';
+import LiveRoomPage from './pages/LiveRoomPage';
+
 function App() {
   return (
     <Router>
@@ -36,6 +39,15 @@ function App() {
       <Route path="mycommunity" element={<ProtectedRoute><MyCommunity /></ProtectedRoute>} />
       <Route path="community/explore/:id" element={<ProtectedRoute><CommunityExplore /></ProtectedRoute>} />
       <Route path="Explore" element={<ProtectedRoute><Explore /></ProtectedRoute>} />
+      <Route path="realtime" element={<ProtectedRoute><RealTime/></ProtectedRoute>}/>
+      <Route
+ path="live/:id"
+ element={
+   <ProtectedRoute>
+      <LiveRoomPage/>
+   </ProtectedRoute>
+ }
+/>
     </Route>
     <Route path="*" element={<ErrorPage />} />
     <Route path="/viewer/:id" element={<Viewerpage/>}/>

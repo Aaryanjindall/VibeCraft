@@ -101,6 +101,14 @@ const projectSchema = new mongoose.Schema(
         },
       },
     ],
+
+    liveRoomCode:{
+ type:String,
+ unique:true,
+ sparse:true
+}
+
+
   },
   {
     timestamps: true,

@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, Folder, Users, Compass, LogOut, Settings, Copy, Search } from "lucide-react";
+import { LayoutDashboard, Folder, Users, Compass, LogOut, Settings, Copy, Search,NetworkIcon } from "lucide-react";
 import { useUser } from "../context/UserProvider";
 
 const Sidebar = ({setusermodal,usermodal}) => {
@@ -11,7 +11,9 @@ const Sidebar = ({setusermodal,usermodal}) => {
     { icon: LayoutDashboard, path: "/ai", label: "Dashboard" },
     { icon: Folder, path: "/ai/projects", label: "Projects" },
     { icon: Search, path: "/ai/explore", label: "Explore" },
-    { icon: Users, path: "/ai/Mycommunity", label: "Community" }
+    { icon: Users, path: "/ai/Mycommunity", label: "Community" },
+    { icon: NetworkIcon, path: "/ai/RealTime", label: "Collaboration" }
+    
   ];
 
   const bottomTabs = [

@@ -1,6 +1,7 @@
 // backend/server.js
 const express = require('express');
 const http = require('http');
+const { Server } = require("socket.io");
 const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -17,7 +18,11 @@ const projectRoutes = require('./routes/project');
 const deployRoutes = require('./routes/deploy');
 const communityRoutes = require('./routes/community');
 const passport = require("passport");
+const initSocket=
+require("./sockets/collaborationSocket");
 require("./config/passport");
+const liveRoomRoutes=
+require("./routes/liveRoom");
 // Initialize app
 
 const app = express();
@@ -28,26 +33,91 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/aiAuth';
 // Create HTTP server for Socket.io
 const server = http.createServer(app);
 
+// const io = new Server(server,{
+//  cors:{
+//    origin:true,
+//    credentials:true
+//  }
+// });
+// io.use((socket,next)=>{
+//  sessionMiddleware(
+//    socket.request,
+//    {},
+//    next
+//  );
+// });
+// initSocket(io);
+
+
 // Middleware
 app.use(cors({
   origin: true,
   credentials: true
 }));
 
-app.use(express.json({ limit: '10mb' }));
+// app.use(express.json({ limit: '10mb' }));
 
 connectDB();
 
-// Session setup
-app.use(session({
+
+const sessionMiddleware =session({
   secret: process.env.SESSION_SECRET || 'your_secret_key',
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: MONGO_URI }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
-}));
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } 
+})
+app.use(sessionMiddleware);
+const io = new Server(server,{
+ cors:{
+   origin:true,
+   credentials:true
+ }
+});
+// io.use((socket,next)=>{
+//  sessionMiddleware(
+//    socket.request,
+//    {},
+//    next
+//  );
+// });
+
+// Session setup
+// app.use(session({
+//   secret: process.env.SESSION_SECRET || 'your_secret_key',
+//   resave: false,
+//   saveUninitialized: false,
+//   store: MongoStore.create({ mongoUrl: MONGO_URI }),
+//   cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
+// }));
 app.use(passport.initialize());
 app.use(passport.session());
+io.use((socket,next)=>{
+
+ sessionMiddleware(
+  socket.request,
+  {},
+  ()=>{
+
+   passport.initialize()(
+    socket.request,
+    {},
+    ()=>{
+
+      passport.session()(
+       socket.request,
+       {},
+       next
+      );
+
+    }
+   );
+
+  }
+ );
+
+});
+initSocket(io);
 passport.serializeUser((user, done) => {
   done(null, user._id);
 });
@@ -85,6 +155,10 @@ app.use('/api/project', projectRoutes);
 
 app.use('/api/deploy',deployRoutes);
 app.use('/api/community/',communityRoutes);
+app.use(
+"/api/rooms",
+liveRoomRoutes
+);
 // Socket.io setup for real-time chat
 
 server.listen(PORT, () => {
