@@ -106,12 +106,12 @@ router.get("/google",(req,res,next)=>{
 );
 router.get("/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:5173/error"
+    failureRedirect: "https://vibe-craft-six.vercel.app/error"
   }),
   (req, res) => {
     const redirect = req.session.redirectAfterLogin || "/ai";
     req.session.redirectAfterLogin = null;  
-    res.redirect(`http://localhost:5173${redirect}`);
+    res.redirect(`https://vibe-craft-six.vercel.app${redirect}`);
   }
 );
 module.exports = router;

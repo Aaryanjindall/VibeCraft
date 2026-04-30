@@ -15,7 +15,7 @@ const deploy = async() => {
   }
   setDeployStatus("Deploying...");
   const id = currentProject.id;
-  const res = await fetch("http://localhost:5001/api/deploy/internal/"+id,
+  const res = await fetch("https://vibecraft-sxyx.onrender.com/api/deploy/internal/"+id,
   {
     method : "POST",
     credentials: "include"
@@ -41,7 +41,7 @@ const deploynet = async () => {
     setDeployStatus("Deploying...");
 
     const res = await fetch(
-      "http://localhost:5001/api/deploy/netlify/" + currentProject.id,
+      "https://vibecraft-sxyx.onrender.com/api/deploy/netlify/" + currentProject.id,
       {
         method: "POST",
         credentials: "include",
@@ -70,7 +70,7 @@ const deploynet = async () => {
 const loadDeploys = async () => {
   if (!currentProject) return;
   const res = await fetch(
-    "http://localhost:5001/api/deploy/history/" +
+    "https://vibecraft-sxyx.onrender.com/api/deploy/history/" +
       currentProject.id,
     {
       credentials: "include",

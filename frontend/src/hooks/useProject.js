@@ -11,7 +11,7 @@ export const useProject = () => {
     if (!prompt.trim()) return;
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5001/api/generate", {
+      const res = await fetch("https://vibecraft-sxyx.onrender.com/api/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export const useProject = () => {
   const loadProject = async (id) => {
     try {
       const res = await fetch(
-        "http://localhost:5001/api/project/" + id,
+        "https://vibecraft-sxyx.onrender.com/api/project/" + id,
         { credentials: "include" }
       );
 
@@ -62,7 +62,7 @@ export const useProject = () => {
 
   const handleFork = async(id) => {
     const res = await fetch(
-      "http://localhost:5001/api/project/fork/"+ id,{
+      "https://vibecraft-sxyx.onrender.com/api/project/fork/"+ id,{
         method: "POST",
         credentials: "include",
       } 
@@ -75,7 +75,7 @@ export const useProject = () => {
   const loadpublic = async() => {
     console.log("yhan se jara rha")
     const res = await fetch(
-      "http://localhost:5001/api/project/public",{
+      "https://vibecraft-sxyx.onrender.com/api/project/public",{
         credentials: "include",
         method: "GET"
       }
@@ -89,7 +89,7 @@ export const useProject = () => {
 
   const getProjects = async () => {
     const res = await fetch(
-      "http://localhost:5001/api/project",
+      "https://vibecraft-sxyx.onrender.com/api/project",
       { credentials: "include" }
     );
 
@@ -106,7 +106,7 @@ export const useProject = () => {
 
   const deleteProject = async(id) => {
   await fetch(
-    "http://localhost:5001/api/project/delete/"+ id,
+    "https://vibecraft-sxyx.onrender.com/api/project/delete/"+ id,
     {
       method: "DELETE",
       credentials: "include"

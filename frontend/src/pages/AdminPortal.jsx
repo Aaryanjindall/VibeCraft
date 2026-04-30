@@ -16,7 +16,7 @@ const AdminPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const API_URL = "http://localhost:5001/api/admin";
+  const API_URL = "https://vibecraft-sxyx.onrender.com/api/admin";
 
   const handleLogin = async (e) => {
     e.preventDefault();

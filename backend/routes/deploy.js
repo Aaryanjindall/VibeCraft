@@ -33,12 +33,12 @@ router.post("/internal/:id",requireAuth,async(req,res) => {
       type: "internal",
     });
     deploy.status = "success";
-    deploy.url = "http://localhost:5001/api/deploy/d/"+ deploy.deployId;
+    deploy.url = "https://vibecraft-sxyx.onrender.com/api/deploy/d/"+ deploy.deployId;
     console.log(deploy.url)
     await deploy.save();
   }else{
     deploy.updatedAt = Date.now();
-  deploy.url = "http://localhost:5001/api/deploy/d/" + deploy.deployId;
+  deploy.url = "https://vibecraft-sxyx.onrender.com/api/deploy/d/" + deploy.deployId;
   deploy.status = "success";
   await deploy.save();
   }
