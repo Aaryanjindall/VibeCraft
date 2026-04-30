@@ -22,13 +22,13 @@ export default function AuthPage() {
   const handleSignin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      toast.error("Please enter email and password");
+      toast.error("Please enter Your email and password");
       return;
     }
     setIsSubmitting(true);
     
     try {
-      const response = await fetch("https://vibecraft-zodr.onrender.com/api/auth/login", {
+      const response = await fetch("https://vibecraft-zodr.onrender.com/api/auth/login ", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
