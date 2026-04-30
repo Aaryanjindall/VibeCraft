@@ -26,6 +26,7 @@ require("./routes/liveRoom");
 // Initialize app
 
 const app = express();
+app.set('trust proxy', 1); // Trust Render proxy to allow secure cookies
 
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/aiAuth';
@@ -60,12 +61,18 @@ app.use(cors({
 connectDB();
 
 
-const sessionMiddleware =session({
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
+
+const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET || 'your_secret_key',
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: MONGO_URI }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24 } 
+  cookie: { 
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    sameSite: isProduction ? 'none' : 'lax',
+    secure: isProduction
+  } 
 })
 app.use(sessionMiddleware);
 const io = new Server(server,{
