@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
 const socket = io(
- "https://vibecraft-sxyx.onrender.com",
+ "https://vibecraft-zodr.onrender.com",
  {
    withCredentials:true
  }

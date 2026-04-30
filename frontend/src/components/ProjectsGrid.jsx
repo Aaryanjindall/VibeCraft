@@ -14,7 +14,7 @@ const ProjectsGrid = ({ projects,onSelect,deleteProject,onOpen }) => {
   };
 
 //   const handleDelete = async (id) => {
-//     await fetch("http://localhost:5001/api/project/delete/" + id, {
+//     await fetch("https://vibecraft-zodr.onrender.com/api/project/delete/" + id, {
 //       method: "DELETE",
 //       credentials: "include",
 //     });

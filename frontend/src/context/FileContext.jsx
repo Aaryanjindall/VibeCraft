@@ -78,8 +78,8 @@ export const FileProvider = ({ children }) => {
       console.log(status);
 
       const url = currentProject
-        ? `https://vibecraft-sxyx.onrender.com/api/project/update/${currentProject.id}`
-        : `https://vibecraft-sxyx.onrender.com/api/project/save`
+        ? `https://vibecraft-zodr.onrender.com/api/project/update/${currentProject.id}`
+        : `https://vibecraft-zodr.onrender.com/api/project/save`
 
       const method = currentProject ? 'PUT' : 'POST'
       console.log(method);

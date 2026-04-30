@@ -7,7 +7,7 @@ export const usePost = () => {
   const loadPosts = async (communityId) => {
   try {
     const res = await fetch(
-      `https://vibecraft-sxyx.onrender.com/api/post/${communityId}`,
+      `https://vibecraft-zodr.onrender.com/api/post/${communityId}`,
       { credentials: "include" }
     );
 
@@ -34,7 +34,7 @@ export const usePost = () => {
     setPosts(prev => [tempPost, ...prev]);
 
     try {
-      const res = await fetch(`https://vibecraft-sxyx.onrender.com/api/post/create/${communityId}`, {
+      const res = await fetch(`https://vibecraft-zodr.onrender.com/api/post/create/${communityId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -58,7 +58,7 @@ export const usePost = () => {
         p._id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p
       ));
 
-      const res = await fetch(`https://vibecraft-sxyx.onrender.com/api/post/comment/${postId}`, {
+      const res = await fetch(`https://vibecraft-zodr.onrender.com/api/post/comment/${postId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -86,7 +86,7 @@ export const usePost = () => {
         } : p
       ));
 
-      const res = await fetch(`https://vibecraft-sxyx.onrender.com/api/post/like/${id}`, {
+      const res = await fetch(`https://vibecraft-zodr.onrender.com/api/post/like/${id}`, {
         method: "POST",
         credentials: "include",
       });

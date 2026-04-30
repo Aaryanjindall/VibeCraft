@@ -14,8 +14,8 @@ const AuthModal = ({ onClose ,onSuccess }) => {
   const handleAuth = async () => {
     try {
       const url = isLogin
-        ? "https://vibecraft-sxyx.onrender.com/api/auth/login"
-        : "https://vibecraft-sxyx.onrender.com/api/auth/signup";
+        ? "https://vibecraft-zodr.onrender.com/api/auth/login"
+        : "https://vibecraft-zodr.onrender.com/api/auth/signup";
 
       const body = isLogin
         ? { email, password }
@@ -95,7 +95,7 @@ const AuthModal = ({ onClose ,onSuccess }) => {
           <button
             onClick={() =>
               window.open(
-                 `https://vibecraft-sxyx.onrender.com/api/auth/google?redirect=${window.location.pathname}`,
+                 `https://vibecraft-zodr.onrender.com/api/auth/google?redirect=${window.location.pathname}`,
   "_self"
               )
             }

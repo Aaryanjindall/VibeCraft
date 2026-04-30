@@ -9,7 +9,7 @@ export const UserProvider = ({ children }) => {
     const checkUser = async () => {
       try {
         const res = await fetch(
-          "https://vibecraft-sxyx.onrender.com/api/auth/me",
+          "https://vibecraft-zodr.onrender.com/api/auth/me",
           {
             credentials: "include",
           }
@@ -35,7 +35,7 @@ export const UserProvider = ({ children }) => {
   const handleLogout = async () => {
     try {
       await fetch(
-        "https://vibecraft-sxyx.onrender.com/api/auth/logout",
+        "https://vibecraft-zodr.onrender.com/api/auth/logout",
         {
           method: "POST",
           credentials: "include",

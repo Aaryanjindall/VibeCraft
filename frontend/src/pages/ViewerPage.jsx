@@ -24,7 +24,7 @@ export const Viewerpage = () => {
     const load = async () => {
       try {
         const res = await fetch(
-          "https://vibecraft-sxyx.onrender.com/api/project/view/" + id
+          "https://vibecraft-zodr.onrender.com/api/project/view/" + id
         );
         const data = await res.json();
         setFiles(data.files || {});

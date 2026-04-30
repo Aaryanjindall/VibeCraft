@@ -23,7 +23,7 @@ export const CommunityProject = ({ communityId, projectId }) => {
     const load = async () => {
       try {
         const res = await fetch(
-          "https://vibecraft-sxyx.onrender.com/api/project/" + projectId,
+          "https://vibecraft-zodr.onrender.com/api/project/" + projectId,
           { credentials: "include" }
         );
         const data = await res.json();

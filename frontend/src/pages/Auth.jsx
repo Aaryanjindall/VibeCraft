@@ -28,7 +28,7 @@ export default function AuthPage() {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch("https://vibecraft-sxyx.onrender.com/api/auth/login", {
+      const response = await fetch("https://vibecraft-zodr.onrender.com/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -63,7 +63,7 @@ export default function AuthPage() {
     const signupData = { username, email, password };
   
     try {
-      const response = await fetch("https://vibecraft-sxyx.onrender.com/api/auth/signup", {
+      const response = await fetch("https://vibecraft-zodr.onrender.com/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(signupData),
@@ -228,7 +228,7 @@ export default function AuthPage() {
 
           {/* GOOGLE BUTTON */}
           <button
-            onClick={() => window.open("https://vibecraft-sxyx.onrender.com/api/auth/google", "_self")}
+            onClick={() => window.open("https://vibecraft-zodr.onrender.com/api/auth/google", "_self")}
             className="w-full btn-ide btn-ide-secondary py-3 flex items-center justify-center gap-2 text-sm bg-[#1a1a1a]"
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4">

@@ -12,7 +12,7 @@ export const useCommunity = () => {
     const createCommunity = async (name) => {
   try {
     const res = await fetch(
-      "https://vibecraft-sxyx.onrender.com/api/community/create",
+      "https://vibecraft-zodr.onrender.com/api/community/create",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -35,7 +35,7 @@ export const useCommunity = () => {
 };
 
   useEffect(() => {
-  fetch("https://vibecraft-sxyx.onrender.com/api/community/my", {
+  fetch("https://vibecraft-zodr.onrender.com/api/community/my", {
     credentials: "include",
   })
     .then((res) => {
@@ -57,7 +57,7 @@ export const useCommunity = () => {
     const joinCommunity = async (id) => {
   try {
     const res = await fetch(
-      "https://vibecraft-sxyx.onrender.com/api/community/join/" + id,
+      "https://vibecraft-zodr.onrender.com/api/community/join/" + id,
       {
         method: "POST",
         credentials: "include",
@@ -78,7 +78,7 @@ export const useCommunity = () => {
 
   const loadCommunities = async() => {
     const res = await fetch(
-      "https://vibecraft-sxyx.onrender.com/api/community/my",{
+      "https://vibecraft-zodr.onrender.com/api/community/my",{
         credentials: "include",
         method: "GET",
       }
@@ -92,7 +92,7 @@ export const useCommunity = () => {
 
   const getCommunityProjects = async(id) => {
     const res = await fetch(
-      "https://vibecraft-sxyx.onrender.com/api/community/projects/"+id,{
+      "https://vibecraft-zodr.onrender.com/api/community/projects/"+id,{
         method: "GET",
         credentials: "include",
       }
@@ -102,7 +102,7 @@ export const useCommunity = () => {
   }
   const exploreCommunitiesFn = async () => {
   const res = await fetch(
-    "https://vibecraft-sxyx.onrender.com/api/community/all",
+    "https://vibecraft-zodr.onrender.com/api/community/all",
     {
       method: "GET",
       credentials: "include",
@@ -117,7 +117,7 @@ export const useCommunity = () => {
 
   const getCommunityMembers = async (id) => {
   const res = await fetch(
-    "https://vibecraft-sxyx.onrender.com/api/community/members/" + id,
+    "https://vibecraft-zodr.onrender.com/api/community/members/" + id,
     {
       credentials: "include",
     }
@@ -134,7 +134,7 @@ export const useCommunity = () => {
 const addProjectToCommunity = async (projectId, communityId) => {
   try {
     const res = await fetch(
-      `https://vibecraft-sxyx.onrender.com/api/community/${communityId}/add-project`,
+      `https://vibecraft-zodr.onrender.com/api/community/${communityId}/add-project`,
       {
         method: "POST",
         headers: {
@@ -162,7 +162,7 @@ const removeMember = async (targetUserId, communityId) => {
     setcommunitymembers(prev => prev.filter(m => m.user._id !== targetUserId));
 
     const res = await fetch(
-      `https://vibecraft-sxyx.onrender.com/api/community/${communityId}/remove`,
+      `https://vibecraft-zodr.onrender.com/api/community/${communityId}/remove`,
       {
         method: "POST",
         headers: {
@@ -190,7 +190,7 @@ const removeMember = async (targetUserId, communityId) => {
 const saveProject = async (communityId, projectId, files) => {
   try {
     const res = await fetch(
-      `https://vibecraft-sxyx.onrender.com/api/community/${communityId}/save-project`,
+      `https://vibecraft-zodr.onrender.com/api/community/${communityId}/save-project`,
       {
         method: "POST",
         headers: {
@@ -215,7 +215,7 @@ const saveProject = async (communityId, projectId, files) => {
 const forkCommunityProject = async (communityId, projectId) => {
   try {
     const res = await fetch(
-      `https://vibecraft-sxyx.onrender.com/api/community/${communityId}/fork/${projectId}`,
+      `https://vibecraft-zodr.onrender.com/api/community/${communityId}/fork/${projectId}`,
       {
         method: "POST",
         credentials: "include",
@@ -241,7 +241,7 @@ const assignRole = async (communityId, targetUserId, newRole) => {
     ));
 
     const res = await fetch(
-      `https://vibecraft-sxyx.onrender.com/api/community/${communityId}/assign-role`,
+      `https://vibecraft-zodr.onrender.com/api/community/${communityId}/assign-role`,
       {
         method: "POST",
         headers: {
@@ -273,7 +273,7 @@ const assignRole = async (communityId, targetUserId, newRole) => {
 const deleteCommunity = async (communityId) => {
   try {
     const res = await fetch(
-      `https://vibecraft-sxyx.onrender.com/api/community/${communityId}`,
+      `https://vibecraft-zodr.onrender.com/api/community/${communityId}`,
       {
         method: "DELETE",
         credentials: "include",
@@ -299,7 +299,7 @@ const deleteCommunity = async (communityId) => {
 const removeProject = async (communityId, projectId) => {
   try {
     const res = await fetch(
-      `https://vibecraft-sxyx.onrender.com/api/community/${communityId}/remove-project`,
+      `https://vibecraft-zodr.onrender.com/api/community/${communityId}/remove-project`,
       {
         method: "POST",
         headers: {

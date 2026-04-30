@@ -19,7 +19,7 @@ const RealTime = () => {
   const createRoom = async () => {
     try {
       setLoading(true);
-      const res = await fetch("https://vibecraft-sxyx.onrender.com/api/rooms/create-live", {
+      const res = await fetch("https://vibecraft-zodr.onrender.com/api/rooms/create-live", {
         method: "POST",
         credentials: "include",
       });
