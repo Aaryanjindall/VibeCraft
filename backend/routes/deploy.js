@@ -156,7 +156,6 @@ let deploy;
     let netlifyRes;
 
 if (!deploy.siteId) {
-  // ⭐ FIRST TIME → create site
 
   netlifyRes = await axios.post(
     "https://api.netlify.com/api/v1/sites",
