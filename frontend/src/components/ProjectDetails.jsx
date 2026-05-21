@@ -53,7 +53,7 @@ const ProjectDetails = ({
         <div>
           <h2 className="text-xl font-bold mb-1 truncate" title={project.name}>{project.name}</h2>
           <p className="text-[10px] uppercase tracking-widest text-[#666]">
-            Created: {new Date(project.createdAt).toLocaleDateString()}
+            Created : {new Date(project.createdAt).toLocaleDateString()}
           </p>
           <p
     className="text-[10px] uppercase tracking-widest text-[#666] mt-1 break-all"
